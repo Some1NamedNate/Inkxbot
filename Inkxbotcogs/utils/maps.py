@@ -1,6 +1,6 @@
 #!/bin/env python
 
-# With credit to DanielKO
+# With credit to DanielKO and Danny
 
 from lxml import etree
 import datetime, re
@@ -29,12 +29,12 @@ class Rotation(object):
         prefix = ''
         if self.start > now:
             minutes_delta = int((self.start - now) / datetime.timedelta(minutes=1))
-            hours = int(minutes_delta / 60) + 1
+            minutes = minutes_delta % 60
             if hours == 1:
                 word = "hour"
             else:
                 word = "hours"
-            prefix = '======**In approximately {0} {1}**===============\n'.format(hours, word)
+            prefix = '===**In {2} {0} and {1} minutes**============\n'.format(word, minutes, hours)
         else:
             prefix = '=========**Current Rotation**==================\n'
 
