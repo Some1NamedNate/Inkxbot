@@ -34,11 +34,11 @@ class Rotation(object):
                 word = "hour"
             else:
                 word = "hours"
-            prefix = '``In {2} {0} and {1} minutes``\n'.format(word, minutes, hours)
+            prefix = '**In {2} {0} and {1} minutes**\n'.format(word, minutes, hours)
         else:
-            prefix = '``Current Rotation``\n'
+            prefix = '**Current Rotation**\n'
 
-        fmt = '*{1}*: {2[0]} and {2[1]}\n*Turf War*: {0[0]} and {0[1]}'
+        fmt = '*__{1}__*\n {2[0]} and {2[1]}\n*__Turf War__*\n {0[0]} and {0[1]}'
         return prefix + fmt.format(self.turf_maps, self.ranked_mode, self.ranked_maps)
 
 # based on https://github.com/Wiwiweb/SakuraiBot/blob/master/src/sakuraibot.py
