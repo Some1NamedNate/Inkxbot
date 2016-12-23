@@ -5,6 +5,8 @@ from urllib.parse import quote as urlquote
 import random
 from collections import namedtuple
 
+#based off of https://github.com/Rapptz/RoboDanny
+
 class Splatoon:
     """Splatoon related commands."""
 
