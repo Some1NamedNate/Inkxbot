@@ -1,19 +1,23 @@
-import discord;
 from discord.ext import commands
 from .utils import config, checks
 import asyncio
+import discord
 
 class Moderation:
     """ Moderative Commands to keep the server clean """
 
     def __init__(self, bot):
         self.bot = bot
-    #def is_me(m):
-    #    return m.author == client.user
-
-    #deleted = await client.purge_from(channel, limit=100, check=is_me)
-    #await client.send_message(channel, 'Deleted {} message(s)'.format(len(deleted)))
     
+
+
+    def _role_from_string(self, server, rolename, roles=None):
+        if roles is None:
+            roles = server.roles
+        role = discord.utils.find(lambda r: r.name.lower() == rolename.lower(),roles)
+
+        return role
+
     
     @commands.command(pass_context=True, no_pm=True, name = 'clear')
     @commands.has_role('Bot Commander')
@@ -41,14 +45,56 @@ class Moderation:
         await self.bot.purge_from(ctx.message.channel, limit=amount, before=ctx.message)
         await self.bot.say('Deleted {0}'.format(amount))
         await asyncio.sleep(1.5)
-        #await self.bot.delete_message(ctx.message.channel, limit=, after=ctx.message)
 
-#    the command below is still in development. I'm sorry if the development is gonna take long
+    @commands.command(pass_context=True, no_pm=True)
+    @commands.has_role('Bot Commander')
+    async def give(self, ctx, rolename, user: discord.Member=None):
+        """Gives a role to a user, defaults to author
+        Role name must be in quotes if there are spaces."""
+        author = ctx.message.author
+        channel = ctx.message.channel
+        server = ctx.message.server
+
+        if user is None:
+            user = author
+
+        role = self._role_from_string(server, rolename)
+
+        if role is None:
+            await self.bot.say('That role cannot be found.')
+            return
+
+        if not channel.permissions_for(server.me).manage_roles:
+            await self.bot.say("I don't have permissions to manage roles!")
+            return
+
+        await self.bot.add_roles(user, role)
+        await self.bot.say('I have given the {} role to {}'.format(role.name, user.name))
+
+    @commands.command(pass_context=True, no_pm=True, name = 'remove')
+    @commands.has_role('Bot Commander')
+    async def _remove(self, ctx, rolename, user: discord.Member=None):
+        """Removes a role from user, defaults to author
+        Role name must be in quotes if there are spaces."""
+        server = ctx.message.server
+        author = ctx.message.author
+
+        role = self._role_from_string(server, rolename)
+        if role is None:
+            await self.bot.say("Role not found.")
+            return
+
+        if user is None:
+            user = author
+
+        if role in user.roles:
+            try:
+                await self.bot.remove_roles(user, role)
+                await self.bot.say("Role successfully removed.")
+            except discord.Forbidden:
+                await self.bot.say("I don't have permissions to manage roles!")
+        else:
+            await self.bot.say("User does not have that role.")
     
-#    @commands.command(pass_context=True, no_pm=True)
-#    @commands.has_role('Bot Commander')
-#    async def give(self, ):
-#        """Gives a role to a user"""
-
 def setup(bot):
     bot.add_cog(Moderation(bot))
