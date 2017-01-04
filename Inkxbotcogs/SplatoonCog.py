@@ -4,8 +4,7 @@ import asyncio, aiohttp
 from urllib.parse import quote as urlquote
 import random
 from collections import namedtuple
-
-#based off of https://github.com/Rapptz/RoboDanny
+import discord
 
 class Splatoon:
     """Splatoon related commands."""
@@ -62,7 +61,8 @@ class Splatoon:
     @commands.command(aliases=['rotation'])
     async def maps(self):
         """Shows the current maps in the Splatoon schedule."""
-        await self.bot.say(self.get_map_message(0))
+        mps_embed = discord.Embed(title='SPLATOON SCHEDULE', description="{}".format(self.get_map_message(0)), color=0xFF8C00)
+        await self.bot.say(embed=mps_embed)
 
     @commands.command(hidden=True)
     async def nextmaps(self):
@@ -77,8 +77,9 @@ class Splatoon:
     @commands.command(aliases=['s'])
     async def schedule(self):
         """Shows the current Splatoon schedule."""
+        sched_embed = discord.Embed(title='SPLATOON SCHEDULE', description="{}".format('\n'.join(map(str, self.map_data))), color=0xFF8C00)
         if self.map_data:
-            await self.bot.say('\n'.join(map(str, self.map_data)))
+            await self.bot.say(embed=sched_embed)
         else:
             await self.bot.say('No map data found. Try again later.')
 
