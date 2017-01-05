@@ -17,7 +17,8 @@ startup_extensions = ["Inkxbotcogs.SplatoonCog",
                       "Inkxbotcogs.HearthstoneCog",
                       "Inkxbotcogs.DestinyCog",
                       "Inkxbotcogs.admin",
-                      "Inkxbotcogs.modcog"
+                      "Inkxbotcogs.modcog",
+                      "Inkxbotcogs.MiscCog"
                       ]
 
 
@@ -59,11 +60,9 @@ async def on_ready():
     print(bot.user.id)
     print('------')
     await bot.change_presence(game=discord.Game(name='https://inkxbot.wordpress.com/'))
-#    await bot.send_message(discord.Object(id='248106639410855936'), "@here, A new WordPress post about my development has been made, check it out at https://inkxbot.wordpress.com/")
-#    await bot.send_message(discord.Object(id='220935619977805824'), "hey everyone! My kill command is now functional! type ``,,kill <anyone's name>`` and kill somone! Thank you for following my development")
-#    await bot.send_message(discord.Object(id='227514633735372801'), "@everyone, A new WordPress post about my development has been made, check it out at https://inkxbot.wordpress.com/")
-#    yield from .send_message(discord.Object(id='244597754607828992'), ", Thank you for following my development")
-#    yield from .send_message(discord.Object(id='154321380064624642'), "@here, ")
+    #await bot.send_message(discord.Object(id='248106639410855936'), "@here, A new WordPress post about my development has been made, check it out at https://inkxbot.wordpress.com/")
+    #await bot.send_message(discord.Object(id='227514633735372801'), "A new WordPress post about my development has been made, check it out at https://inkxbot.wordpress.com/")
+    #await bot.send_message(discord.Object(id='258350226279104512'), "A new WordPress post about my development has been made, check it out at https://inkxbot.wordpress.com/")
 
 
 @bot.command()
@@ -119,15 +118,10 @@ async def slap(ctx, args):
     user = ctx.message.author.mention
     await bot.say('**SMACK!** *{0} slaps {1}*'.format(user, args)) 
 
-@bot.command(hidden=True)
-async def coreyrage():
-    """Corey's rage"""
-    await bot.say("I HATE EVERYTHING ARE YOU KIDDING ME RAAAAAAAAAAAAAAAAAAAGHHHHHHHHHHHHHHHHHHHHHHHFEIFYEDBJ")
-
-@bot.command(name='break')
-async def _break():
-    """Take a break"""
-    await bot.say("It's time to take a break. Or you'll probably never stop.")
+@bot.command()
+async def invite(server):
+    """I'll post your server's invite link in the chat"""
+    await bot.say("```COMMAND STILL IN DEVELOPMENT```")
 
 @bot.event
 async def on_member_ban(member):
@@ -136,26 +130,36 @@ async def on_member_ban(member):
             await bot.send_message(channel, content="**BAN** \n**User**:{0}".format(member))
             break
     else:
-        await bot.send_message(member.server.channels[0], "hey, I noticed that you made a ban, want to keep records of your bans? Create a ``ban-logs`` text channel for me to keep track of the server's bans!")
+        await bot.send_message(member.server.channels[0], "hey, I noticed that you made a ban, want to keep records of your server's bans? Create a ``ban-logs`` text channel for me to keep track of the server's bans!")
 
 @bot.event
 async def on_message(message):
 
     if message.content.startswith('+rip Inkxbot'):
-        await asyncio.sleep(10)
+        await asyncio.sleep(8)
+        await bot.send_typing(message.channel)
+        await asyncio.sleep(2)
         await bot.send_message(message.channel, "That's a lie.")
 
     elif message.content.startswith('+rip <@245648163837444097>'):
-        await asyncio.sleep(10)
+        await asyncio.sleep(8)
+        await bot.send_typing(message.channel)
+        await asyncio.sleep(2)
         await bot.send_message(message.channel, "That's a lie.")
 
     elif message.content.startswith('<@245648163837444097>'):
+        await bot.send_typing(message.channel)
+        await asyncio.sleep(1)
         await bot.send_message(message.channel, "What the hell do you want from me. ~~type ,,inkxbot you nerd~~")
 
     elif message.content.startswith('(╯°□°）╯︵ ┻━┻'):
+        await bot.send_typing(message.channel)
+        await asyncio.sleep(1)
         await bot.send_message(message.channel, "┬─┬﻿ ノ( T_Tノ)")
 
     elif message.content.startswith('/tableflip'):
+        await bot.send_typing(message.channel)
+        await asyncio.sleep(1)
         await bot.send_message(message.channel, "┬─┬﻿ ノ( T_Tノ)")
     await bot.process_commands(message)
 
