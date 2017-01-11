@@ -1,6 +1,7 @@
 from discord.ext import commands
 import discord
-import datetime, re
+import datetime
+import re
 import json, asyncio
 import copy
 import logging
@@ -9,7 +10,8 @@ import sys
 from collections import Counter
 
 
-description = '''My command list is right here, or at: https://inkxbot.wordpress.com/'''
+description = '''My command list is right here'''
+
 
 # this specifies what extensions to load when the bot starts up
 startup_extensions = ["Inkxbotcogs.SplatoonCog",
@@ -27,31 +29,20 @@ help_attrs = dict(hidden=True)
 
 bot = commands.Bot(command_prefix=',,', description=description, pm_help=True, help_attrs=help_attrs)
 
+
+def load_messages():
+    with open('servermessage.json') as m:
+        return json.load(m)
+
 @bot.event
 async def on_member_join(member):
     server = member.server
-    #these numbers in the next 4 lines below are the ids to servers, each id is specified to their own server
-    homeserver = '248106582309601281'
-    rjustdance = '154321280122748928'
-    ctk = '208795039831293955'
-    #these lines are for words to be spoken
-    inkxbotserver = 'my home server'
-    ctkname = "CTK's"
-    #the next lines are messages made for their own server to send in any form
-    fmt1 = 'Welcome {0.mention} to {1.name}!'
-    fmt2 = "Welcome to {1.name} {0.mention}! please read <#154321328399187968> before you start dancin'!"
-    fmt3 = "Thank you for joining {1} server {0.mention}! Welcome to the Rhythm Game Movement!"
-    fmt4 = "Welcome to {1} {0.name}! Make sure you read <#248172845773881364> before you do any thing stupid"
-    if server.id == rjustdance:
-        await bot.send_message(server, fmt2.format(member, server))
-    elif server.id == homeserver:
-        await bot.send_message(server, fmt4.format(member, inkxbotserver))
-    elif server.id == ctk:
-        await bot.send_message(server, fmt3.format(member, ctkname))
-    else:
-        await bot.send_message(server, fmt1.format(member, server))
-
-
+    messages = load_messages()
+    if server.id not in messages: return
+    if "welcome" not in messages[server.id]: return
+    srv = messages[server.id]
+    wlc = messages[server.id]['welcome'].format(member)
+    await bot.send_message(server, wlc)
 
 @bot.event
 async def on_ready():
@@ -97,6 +88,7 @@ async def _bot():
     await bot.say("Dumba$$, I'm not dead.")
 
 
+
 #@bot.command()
 #async def kill(ctx, args):
 #    """Kill someone!"""
@@ -118,22 +110,26 @@ async def slap(ctx, args):
     user = ctx.message.author.mention
     await bot.say('**SMACK!** *{0} slaps {1}*'.format(user, args)) 
 
-@bot.command()
-async def invite(server):
-    """I'll post your server's invite link in the chat"""
-    await bot.say("```COMMAND STILL IN DEVELOPMENT```")
-
 @bot.event
 async def on_member_ban(member):
     for channel in member.server.channels:
         if channel.name == "ban-logs":
-            await bot.send_message(channel, content="**BAN** \n**User**:{0}".format(member))
+            await bot.send_message(channel, content="**BAN** \n**User**: {0}".format(member))
             break
     else:
         await bot.send_message(member.server.channels[0], "hey, I noticed that you made a ban, want to keep records of your server's bans? Create a ``ban-logs`` text channel for me to keep track of the server's bans!")
 
 @bot.event
-async def on_message(message):
+async def on_message(message, ctx):
+
+    invite_syntax = re.compile(r'((http|https):\/\/)?discord.gg\/([a-z0-9])+', re.IGNORECASE)
+    lm = load_messages()
+    svr = lm[server.id]
+    author = ctx.message.author.mention
+    shill = svr["severShill"]
+    forbode = svr["forbode"]
+    shillmsg = shill.format(author)
+    fbmsg = forbode.format(author)
 
     if message.content.startswith('+rip Inkxbot'):
         await asyncio.sleep(8)
@@ -152,7 +148,7 @@ async def on_message(message):
         await asyncio.sleep(1)
         await bot.send_message(message.channel, "What the hell do you want from me. ~~type ,,inkxbot you nerd~~")
 
-    elif message.content.startswith('(╯°□°）╯︵ ┻━┻'):
+    elif message.content.startswith('(╯°□°）╯︵ ┻━┻'):    
         await bot.send_typing(message.channel)
         await asyncio.sleep(1)
         await bot.send_message(message.channel, "┬─┬﻿ ノ( T_Tノ)")
@@ -161,6 +157,20 @@ async def on_message(message):
         await bot.send_typing(message.channel)
         await asyncio.sleep(1)
         await bot.send_message(message.channel, "┬─┬﻿ ノ( T_Tノ)")
+        
+
+    elif invite_syntax.search(message.content):
+        if message.server.id == svr:
+            if server.id not in lm: 
+                return
+            else:
+                if "forbode" not in svr:
+                    await bot.send_message(message.channel, shillmsg)
+                else:
+                    await bot.send_message(message.channel, fbmsg)
+                    await asyncio.sleep(1)
+                    await bot.send_message(message.channel, shillmsg)
+
     await bot.process_commands(message)
 
 def load_credentials():
