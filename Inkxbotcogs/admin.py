@@ -17,8 +17,9 @@ class Admin:
     @checks.is_owner()
     async def load(self, *, module : str):
         """Loads a module."""
+        extention = "Inkxbotcogs." + module
         try:
-            self.bot.load_extension(module)
+            self.bot.load_extension(extention)
         except Exception as e:
             await self.bot.say('BAKA!')
             await self.bot.say('{}: {}'.format(type(e).__name__, e))
@@ -29,8 +30,9 @@ class Admin:
     @checks.is_owner()
     async def unload(self, *, module : str):
         """Unloads a module."""
+        extention = "Inkxbotcogs." + module
         try:
-            self.bot.unload_extension(module)
+            self.bot.unload_extension(extention)
         except Exception as e:
             await self.bot.say('BAKA!')
             await self.bot.say('{}: {}'.format(type(e).__name__, e))
@@ -41,9 +43,10 @@ class Admin:
     @checks.is_owner()
     async def _reload(self, *, module : str):
         """Reloads a module."""
+        extention = "Inkxbotcogs." + module
         try:
-            self.bot.unload_extension(module)
-            self.bot.load_extension(module)
+            self.bot.unload_extension(extention)
+            self.bot.load_extension(extention)
         except Exception as e:
             await self.bot.say('BAKA!')
             await self.bot.say('{}: {}'.format(type(e).__name__, e))
@@ -78,6 +81,12 @@ class Admin:
             return
 
         await self.bot.say(python.format(result))
+        
+    @commands.command(pass_context=True, hidden=True)
+    @checks.is_owner()
+    async def newstuff(self):
+        """sends a message about a new feature!"""
+        await self.bot.say("<new features here>")
 
 def setup(bot):
     bot.add_cog(Admin(bot))
