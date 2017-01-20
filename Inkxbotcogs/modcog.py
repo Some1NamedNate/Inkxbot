@@ -45,7 +45,10 @@ class Moderation:
         await self.bot.purge_from(ctx.message.channel, limit=amount, before=ctx.message)
         await self.bot.say('Deleted {0}'.format(amount))
         await asyncio.sleep(1.5)
+        #await self.bot.delete_message(ctx.message.channel, limit=(1), after=ctx.message)
 
+#    the command below is still in development. I'm sorry if the development is gonna take long
+    
     @commands.command(pass_context=True, no_pm=True)
     @commands.has_role('Bot Commander')
     async def give(self, ctx, rolename, user: discord.Member=None):

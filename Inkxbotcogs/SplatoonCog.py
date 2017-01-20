@@ -7,7 +7,7 @@ from collections import namedtuple
 import discord
 
 class Splatoon:
-    """Splatoon related commands."""
+    """ Splatoon related commands. """
 
     def __init__(self, bot):
         self.bot = bot

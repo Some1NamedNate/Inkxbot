@@ -82,11 +82,16 @@ class Admin:
 
         await self.bot.say(python.format(result))
         
+    
+    
     @commands.command(pass_context=True, hidden=True)
     @checks.is_owner()
     async def newstuff(self):
-        """sends a message about a new feature!"""
-        await self.bot.say("<new features here>")
+        """sends a message about a new feature in all servers"""
+        await self.bot.say("All done sir")
+        await self.bot.send_message(discord.Object(id='248106639410855936'), "@here, A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
+        await self.bot.send_message(discord.Object(id='227514633735372801'), "A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
+        await self.bot.send_message(discord.Object(id='258350226279104512'), "A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
 
 def setup(bot):
     bot.add_cog(Admin(bot))
