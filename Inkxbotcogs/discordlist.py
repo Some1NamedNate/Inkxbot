@@ -18,7 +18,7 @@ class Carbonitex:
 
     async def update(self):
         payload = {
-            "token": 'MjQ1NjQ4MTYzODM3NDQ0MDk3.C3FinA.QND2snDNAQUJRrlR49XjEm4Mdcw',
+            "token": '(bots token goes here)',
             "servers": len(self.bot.servers)
         }
         url = "https://bots.discordlist.net/api.php"
