@@ -6,7 +6,7 @@ log = logging.getLogger()
 
 DISCORDLIST_API = 'https://bots.discordlist.net/api'
 
-class Carbonitex:
+class Discordlist:
     """Cog for updating discordlist.net bot information."""
     def __init__(self, bot):
         self.bot = bot
@@ -37,4 +37,4 @@ class Carbonitex:
         await self.update()
 
 def setup(bot):
-    bot.add_cog(Carbonitex(bot))
+    bot.add_cog(Discordlist(bot))
