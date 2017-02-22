@@ -18,7 +18,7 @@ class Discordlist:
 
     async def update(self):
         payload = {
-            "token": '(bots token goes here)',
+            "token": '(discordlist token goes here)',
             "servers": len(self.bot.servers)
         }
         url = "https://bots.discordlist.net/api.php"
