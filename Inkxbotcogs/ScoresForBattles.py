@@ -29,14 +29,19 @@ class Scoring:
             battle = battle
         server = ctx.message.server
         teamserver = teams[server.id]
-        if server.id not in teams:
-            await self.bot.say("You haven't given me your team's name, type `,writeteam \"YOUR TEAM'S NAME HERE\"` to store it into my database")
         teamname = teams[server.id]['team']
+#                In the future, the command will also do tournament scores, but that will have to wait.
         for s in server.channels:
-            if s.name == "scrim-scores":
-                await self.bot.send_message(s, "**{4}** \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, battle))
-                await self.bot.say("done")
+            if battle == 'Scrim':
+                if s.name == "scrim-scores":
+                    await self.bot.send_message(s, "**{4}** \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, battle))
+                    await self.bot.say("done")
+                    break
+            elif server.id not in teams:
+                await self.bot.say("You haven't given me your team's name, type `,writeteam \"YOUR TEAM'S NAME HERE\"` to store it into my database")
                 break
+        else:
+            self.bot.say("It seems there's a problem, I don't see a #scrim-scores or a #tournament-scores")
 
     @commands.command(aliases=['wt'], pass_context=True, no_pm=True, hidden=False)
     async def writeteam(self, ctx, args):
