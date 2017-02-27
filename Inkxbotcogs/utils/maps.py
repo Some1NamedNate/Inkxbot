@@ -29,6 +29,7 @@ class Rotation(object):
         prefix = ''
         if self.start > now:
             minutes_delta = int((self.start - now) / datetime.timedelta(minutes=1))
+            hours = int(minutes_delta / 60)
             minutes = minutes_delta % 60
             if hours == 1:
                 word = "hour"
