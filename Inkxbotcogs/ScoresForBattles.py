@@ -5,13 +5,16 @@ import json
 
 
 def write_teams():
-    with open('teams.json') as fp:
+    with open('teams.json') as f:
         return json.dump()
 
 def load_teams():
-    with open('teams.json') as lt:
-        return json.load(lt)
+    with open('teams.json') as l:
+        return json.load(l)
 
+def load_trnynames():
+    with open('tournamentnames.json') as t:
+        return json.load(t)
 
 class Scoring:
     """Commands that display scores from e-sport battles against teams."""
@@ -23,6 +26,7 @@ class Scoring:
     async def post(self, ctx, battle, homescr, args, awayscr):
         """posts a scrim score in a #scrim-scores channel \n EXAMPLE: ,post 'Tournament or Scrim' 2 'name of clan you scrimed against' 1"""
         teams = load_teams()
+        trnys = load_trnynames()
         if battle == 'scrim':
             battle = 'Scrim'
         else:
@@ -30,18 +34,31 @@ class Scoring:
         server = ctx.message.server
         teamserver = teams[server.id]
         teamname = teams[server.id]['team']
-#                In the future, the command will also do tournament scores, but that will have to wait.
+        trnyname = trnys[battle]['tourny']
         for s in server.channels:
             if battle == 'Scrim':
                 if s.name == "scrim-scores":
                     await self.bot.send_message(s, "**{4}** \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, battle))
                     await self.bot.say("done")
                     break
+            elif battle == battle:
+                if s.name == "tournament-scores":
+                    await self.bot.send_message(s, "**Tournament**: {4} \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, trnyname))
+                    await self.bot.say("done")
+                    break
+
             elif server.id not in teams:
                 await self.bot.say("You haven't given me your team's name, type `,writeteam \"YOUR TEAM'S NAME HERE\"` to store it into my database")
                 break
+
+            elif battle not in trnys:
+                if s.name == "tournament-scores":
+                    await self.bot.send_message(s, "**Tournament**: {4} \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, battle))
+                    await self.bot.say("The tourament's name is not in my database yet but I'll still post it.")
+                    break
+
         else:
-            self.bot.say("It seems there's a problem, I don't see a #scrim-scores or a #tournament-scores")
+            await self.bot.say("It seems there's a problem, try again")
 
     @commands.command(aliases=['wt'], pass_context=True, no_pm=True, hidden=False)
     async def writeteam(self, ctx, args):
