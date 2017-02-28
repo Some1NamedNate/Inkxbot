@@ -6,6 +6,9 @@ import random
 from collections import namedtuple
 import discord
 
+
+
+
 class Splatoon:
     """ Splatoon related commands. """
 
@@ -52,41 +55,45 @@ class Splatoon:
         except IndexError:
             return 'No map data found. Try again later.'
 
+    @commands.event()
+    async def loop_schedulecommand(self, ctx):
+
+
     @commands.command(hidden=True)
-    async def refreshmaps(self):
+    async def refreshmaps(self, ctx):
         """Force refresh the maps in the rotation."""
         await self.update_schedule()
-        await self.bot.say('refreshed')
+        await ctx.send('refreshed')
 
     @commands.command(aliases=['rotation'])
-    async def maps(self):
+    async def maps(self, ctx):
         """Shows the current maps in the Splatoon schedule."""
         mps_embed = discord.Embed(title='SPLATOON SCHEDULE', description="{}".format(self.get_map_message(0)), color=0xFF8C00)
-        await self.bot.say(embed=mps_embed)
+        await ctx.send(embed=mps_embed)
 
     @commands.command(hidden=True)
-    async def nextmaps(self):
+    async def nextmaps(self, ctx):
         """Shows the next maps in the Splatoon schedule."""
-        await self.bot.say(self.get_map_message(1))
+        await ctx.send(self.get_map_message(1))
 
     @commands.command(hidden=True)
-    async def lastmaps(self):
+    async def lastmaps(self, ctx):
         """Shows the last maps in the Splatoon schedule."""
-        await self.bot.say(self.get_map_message(2))
+        await ctx.send(self.get_map_message(2))
 
     @commands.command(aliases=['s'])
-    async def schedule(self):
+    async def schedule(self, ctx):
         """Shows the current Splatoon schedule."""
         sched_embed = discord.Embed(title='SPLATOON SCHEDULE', description="{}".format('\n'.join(map(str, self.map_data))), color=0xFF8C00)
         if self.map_data:
-            await self.bot.say(embed=sched_embed)
+            await ctx.send(embed=sched_embed)
         else:
-            await self.bot.say('No map data found. Try again later.')
+            await ctx.send('No map data found. Try again later.')
 
     @commands.command()
-    async def woomy(self):
+    async def woomy(self, ctx):
         '''Spams "Woomy!"'''
-        await self.bot.say('Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy!')
+        await ctx.send('Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy!')
 
 def setup(bot):
     bot.add_cog(Splatoon(bot))
