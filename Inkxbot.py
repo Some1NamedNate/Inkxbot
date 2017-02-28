@@ -1,3 +1,6 @@
+# This Code is where I try to match the discord.py rewrite, it's not ready yet.
+# 
+
 from discord.ext import commands
 import discord
 import datetime
