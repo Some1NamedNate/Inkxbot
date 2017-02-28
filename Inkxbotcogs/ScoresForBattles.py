@@ -1,3 +1,6 @@
+# This Code is where I try to match the discord.py rewrite, it's not ready yet.
+# 
+
 from discord.ext import commands
 import discord
 import asyncio
@@ -39,22 +42,22 @@ class Scoring:
             if battle == 'Scrim':
                 if s.name == "scrim-scores":
                     await self.bot.send_message(s, "**{4}** \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, battle))
-                    await self.bot.say("done")
+                    await ctx.send("done")
                     break
             elif battle == battle:
                 if s.name == "tournament-scores":
                     await self.bot.send_message(s, "**Tournament**: {4} \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, trnyname))
-                    await self.bot.say("done")
+                    await ctx.send("done")
                     break
 
             elif server.id not in teams:
-                await self.bot.say("You haven't given me your team's name, type `,writeteam \"YOUR TEAM'S NAME HERE\"` to store it into my database")
+                await ctx.send("You haven't given me your team's name, type `,writeteam \"YOUR TEAM'S NAME HERE\"` to store it into my database")
                 break
 
             elif battle not in trnys:
                 if s.name == "tournament-scores":
                     await self.bot.send_message(s, "**Tournament**: {4} \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, battle))
-                    await self.bot.say("The tourament's name is not in my database yet but I'll still post it.")
+                    await ctx.send("The tourament's name is not in my database yet but I'll still post it.")
                     break
 
         else:
@@ -74,7 +77,7 @@ class Scoring:
         #await self.bot.say("I have successfully written your team's name into my database")
         print('"{0}: {1}" Requested by {2}'.format(server.id, args, user))
         print('----------------------------------------------')
-        await self.bot.say("the content will be added to my database in a while")
+        await ctx.send("the content will be added to my database in a while")
 
 def setup(bot):
     bot.add_cog(Scoring(bot))
