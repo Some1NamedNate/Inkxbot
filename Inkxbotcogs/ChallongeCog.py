@@ -12,6 +12,8 @@ class Challonge:
     @commands.command(pass_context=True)
     async def bracket(self, ctx, args):
         """Shows the bracket of your tournament on Callonge. /nExample: ,bracket 'Challonge link'"""
+        channel = ctx.message.channel
+        await self.bot.send_typing(channel)
         site = args + '.svg'
         driver = webdriver.PhantomJS()
         driver.maximize_window()

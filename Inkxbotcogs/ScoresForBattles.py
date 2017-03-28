@@ -29,6 +29,7 @@ class Scoring:
         else:
             battle = battle
         server = ctx.message.server
+        typetochan = ctx.message.channel
         teamserver = teams[server.id]
         teamname = teams[server.id]['team']
         trnyname = trnys[battle]['tourny']
@@ -36,19 +37,27 @@ class Scoring:
             if battle == 'Scrim':
                 if s.name == "scrim-scores":
                     await self.bot.send_message(s, "**{4}** \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, battle))
+                    await self.bot.send_typing(typetochan)
+                    await asyncio.sleep(1)
                     await self.bot.say("done")
                     break
             elif battle == battle:
                 if s.name == "tournament-scores":
                     await self.bot.send_message(s, "**Tournament**: {4} \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, trnyname))
+                    await self.bot.send_typing(typetochan)
+                    await asyncio.sleep(1)
                     await self.bot.say("done")
                     break
 
             elif server.id not in teams:
+                await self.bot.send_typing(typetochan)
+                await asyncio.sleep(1)
                 await self.bot.say("You haven't given me your team's name, type `,writeteam \"YOUR TEAM'S NAME HERE\"` to store it into my database")
                 break
 
         else:
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
             await self.bot.say("It seems there's a problem, try again")
 
     @commands.command(aliases=['wt'], pass_context=True, no_pm=True, hidden=False)
@@ -60,6 +69,8 @@ class Scoring:
         d = teams
         d[server.id] = {}
         d[server.id]["team"] = args
+        typetochan = ctx.message.channel
+        await self.bot.send_typing(typetochan)
         with open('teams.json', 'w') as fp:
             json.dump(d, fp, indent=2)
         await asyncio.sleep(1)

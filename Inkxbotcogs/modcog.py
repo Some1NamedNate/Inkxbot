@@ -26,8 +26,8 @@ class Moderation:
     @commands.command(pass_context=True, no_pm=True, name = 'clear')
     @commands.has_role('Bot Commander')
     async def _clear(self, ctx, amount : int = 100):
-        """Deletes my messages. \n You will need a 'Bot Commander' role in order to use this"""
-		
+        """Deletes my messages.
+        You will need a 'Bot Commander' role in order to use this"""
         channel = ctx.message.channel
 
         calls = 0;
@@ -39,23 +39,22 @@ class Moderation:
                 await self.bot.delete_message(msg)
                 calls += 1
         await self.bot.say('Deleted {0}'.format(calls))
-        await asyncio.sleep(1.5)
-        await self.bot.delete_message(channel, limit=1, after=ctx.message)
+        await asyncio.sleep(1)
+        await self.bot.delete_message(channel, limit=1, around=ctx.message)
 
     @commands.command(pass_context=True, no_pm=True)
     @checks.mod_or_permissions()
     async def purge(self, ctx, amount : int = 5):
         """Deletes specified number of messages.
         You must have a 'Bot Commander' role in order to use this"""
-        await self.bot.purge_from(ctx.message.channel, limit=amount, before=ctx.message)
+        channel = ctx.message.channel
+        await self.bot.purge_from(channel, limit=amount, before=ctx.message)
         await self.bot.say('Deleted {0}'.format(amount))
-        await asyncio.sleep(1.5)
-        #await self.bot.delete_message(ctx.message.channel, limit=(1), after=ctx.message)
-
-#    the command below is still in development. I'm sorry if the development is gonna take long
+        await asyncio.sleep(2)
+        await self.bot.delete_message(channel, limit=1, around=ctx.message)
 
     @commands.command(pass_context=True, no_pm=True)
-    @commands.has_role('Bot Commander')
+    @checks.mod_or_permissions()
     async def give(self, ctx, rolename, user: discord.Member=None):
         """Gives a role to a user, defaults to author
         Role name must be in quotes if there are spaces.
@@ -70,14 +69,20 @@ class Moderation:
         role = self._role_from_string(server, rolename)
 
         if role is None:
+            await self.bot.send_typing(channel)
+            await asyncio.sleep(1)
             await self.bot.say('That role cannot be found.')
             return
 
         if not channel.permissions_for(server.me).manage_roles:
+            await self.bot.send_typing(channel)
+            await asyncio.sleep(1)
             await self.bot.say("I don't have permissions to manage roles!")
             return
 
+        await self.bot.send_typing(channel)
         await self.bot.add_roles(user, role)
+        await asyncio.sleep(1)
         await self.bot.say('I have given the {} role to {}'.format(role.name, user.name))
 
     @commands.command(pass_context=True, no_pm=True, name = 'remove')
@@ -99,11 +104,17 @@ class Moderation:
 
         if role in user.roles:
             try:
+                await self.bot.send_typing(channel)
                 await self.bot.remove_roles(user, role)
+                await asyncio.sleep(1)
                 await self.bot.say("Role successfully removed.")
             except discord.Forbidden:
+                await self.bot.send_typing(channel)
+                await asyncio.sleep(1)
                 await self.bot.say("I don't have permissions to manage roles!")
         else:
+            await self.bot.send_typing(channel)
+            await asyncio.sleep(1)
             await self.bot.say("User does not have that role.")
 
     #@commands.group(pass_context=True, no_pm=True)

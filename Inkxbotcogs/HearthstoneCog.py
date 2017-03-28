@@ -7,8 +7,8 @@ import requests
 
 class Hearthstone:
     def __init__(self, bot):
-        self.bot = bot     
-        #self.loop = AbstractEventLoop.run_in_executor()         
+        self.bot = bot
+        #self.loop = AbstractEventLoop.run_in_executor()
 
         """def get_cards(self):
         #You can change for fitting your language deDE, enUS, esES, esMX,
@@ -24,25 +24,32 @@ class Hearthstone:
         cardname = data['"name": 'args]
         attack = data['"attack": ']
         if data["type": "MINION"] == True:
-            await self.bot.say('**{0}** \n' + 
+            await self.bot.say('**{0}** \n' +
             """
-        
-        
-    @commands.command()
-    async def hearthwiki(self, title):
+
+
+    @commands.command(pass_context=True)
+    async def hearthwiki(self, title, ctx):
         """Returns a hearthstone wiki page. For spaces use underscores."""
         url = 'http://hearthstone.wikia.com/wiki/' + urlquote(title)
 
+        typetochan = ctx.message.channel
         async with aiohttp.get(url) as resp:
             if resp.status == 404:
+                await self.bot.send_typing(typetochan)
+                await asyncio.sleep(1)
                 await self.bot.say('Could not find your page. Try a search:\n{0.url}'.format(resp))
             elif resp.status == 200:
+                await self.bot.send_typing(typetochan)
+                await asyncio.sleep(1)
                 await self.bot.say(resp.url)
             elif resp.status == 502:
-                await self.bot.say('Seems like the Hearthstone Wiki is taking too long to respond. Try again later.')
+                await self.bot.send_typing(typetochan)
+                await asyncio.sleep(1)
+                await self.bot.say('Seems like the Just Dance Wiki is taking too long to respond. Try again later.')
             else:
+                await self.bot.send_typing(typetochan)
                 await self.bot.say('An error has occurred of status code {0.status} happened. Tell Inkx.'.format(resp))
-
 
 def setup(bot):
     bot.add_cog(Hearthstone(bot))

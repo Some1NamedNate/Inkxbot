@@ -6,6 +6,9 @@ import random
 from collections import namedtuple
 import discord
 
+
+
+
 class Splatoon:
     """ Splatoon related commands. """
 
@@ -52,16 +55,22 @@ class Splatoon:
         except IndexError:
             return 'No map data found. Try again later.'
 
+#    @commands.event()
+#    async def loop_schedulecommand(self):
+
     @commands.command(hidden=True)
     async def refreshmaps(self):
         """Force refresh the maps in the rotation."""
         await self.update_schedule()
         await self.bot.say('refreshed')
 
-    @commands.command(aliases=['rotation'])
-    async def maps(self):
+    @commands.command(pass_context=True, aliases=['rotation'])
+    async def maps(self, ctx):
         """Shows the current maps in the Splatoon schedule."""
         mps_embed = discord.Embed(title='SPLATOON SCHEDULE', description="{}".format(self.get_map_message(0)), color=0xFF8C00)
+        typetochan = ctx.message.channel
+        await self.bot.send_typing(typetochan)
+        await asyncio.sleep(1)
         await self.bot.say(embed=mps_embed)
 
     @commands.command(hidden=True)
@@ -74,16 +83,21 @@ class Splatoon:
         """Shows the last maps in the Splatoon schedule."""
         await self.bot.say(self.get_map_message(2))
 
-    @commands.command(aliases=['s'])
-    async def schedule(self):
+    @commands.command(pass_context=True, aliases=['s'])
+    async def schedule(self, ctx):
         """Shows the current Splatoon schedule."""
         sched_embed = discord.Embed(title='SPLATOON SCHEDULE', description="{}".format('\n'.join(map(str, self.map_data))), color=0xFF8C00)
+        typetochan = ctx.message.channel
         if self.map_data:
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
             await self.bot.say(embed=sched_embed)
         else:
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
             await self.bot.say('No map data found. Try again later.')
 
-    @commands.command()
+    @commands.command(pass_context=True)
     async def woomy(self):
         '''Spams "Woomy!"'''
         await self.bot.say('Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy! Woomy!')

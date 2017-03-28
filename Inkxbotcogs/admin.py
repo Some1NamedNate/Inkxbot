@@ -21,10 +21,10 @@ class Admin:
         try:
             self.bot.load_extension(extention)
         except Exception as e:
-            await self.bot.say('BAKA!')
+            await self.bot.say('\U0001f6ab')
             await self.bot.say('{}: {}'.format(type(e).__name__, e))
         else:
-            await self.bot.say('All done sir')
+            await self.bot.say('\U00002705')
 
     @commands.command(hidden=True)
     @checks.is_owner()
@@ -34,10 +34,10 @@ class Admin:
         try:
             self.bot.unload_extension(extention)
         except Exception as e:
-            await self.bot.say('BAKA!')
+            await self.bot.say('\U0001f6ab')
             await self.bot.say('{}: {}'.format(type(e).__name__, e))
         else:
-            await self.bot.say('All done sir')
+            await self.bot.say('\U00002705')
 
     @commands.command(name='reload', hidden=True)
     @checks.is_owner()
@@ -48,10 +48,10 @@ class Admin:
             self.bot.unload_extension(extention)
             self.bot.load_extension(extention)
         except Exception as e:
-            await self.bot.say('BAKA!')
+            await self.bot.say('\U0001f6ab')
             await self.bot.say('{}: {}'.format(type(e).__name__, e))
         else:
-            await self.bot.say('All done sir')
+            await self.bot.say('\U00002705')
 
     @commands.command(pass_context=True, hidden=True)
     @checks.is_owner()
@@ -81,14 +81,14 @@ class Admin:
             return
 
         await self.bot.say(python.format(result))
-        
-    
-    
+
+
+
     @commands.command(pass_context=True, hidden=True)
     @checks.is_owner()
     async def newstuff(self):
         """sends a message about a new feature in all servers"""
-        await self.bot.say("All done sir")
+        await self.bot.say("\U0001f44d")
         await self.bot.send_message(discord.Object(id='248106639410855936'), "@here, A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
         await self.bot.send_message(discord.Object(id='227514633735372801'), "A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
         await self.bot.send_message(discord.Object(id='258350226279104512'), "A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
