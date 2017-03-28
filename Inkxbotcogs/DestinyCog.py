@@ -27,7 +27,7 @@ class Destiny:
             elif resp.status == 502:
                 await self.bot.send_typing(typetochan)
                 await asyncio.sleep(1)
-                await self.bot.say('Seems like the Just Dance Wiki is taking too long to respond. Try again later.')
+                await self.bot.say('Seems like the Destinypedia is taking too long to respond. Try again later.')
             else:
                 await self.bot.send_typing(typetochan)
                 await self.bot.say('An error has occurred of status code {0.status} happened. Tell Inkx.'.format(resp))
