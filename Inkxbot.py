@@ -24,7 +24,7 @@ startup_extensions = ["Inkxbotcogs.SplatoonCog",
                       "Inkxbotcogs.admin",
                       "Inkxbotcogs.modcog",
                       "Inkxbotcogs.MiscCog",
-                      "Inkxbotcogs.discordlist",
+                      "Inkxbotcogs.dbots",
                       "Inkxbotcogs.ScoresForBattles",
                       "Inkxbotcogs.MetaCog",
                       "Inkxbotcogs.ChallongeCog",
@@ -43,7 +43,7 @@ help_attrs = dict(hidden=True)
 
 
 # this line below is for future purposes, it's not gonna be used yet
-#prefix = [',', '.']
+#prefix = [',', '.']u
 
 bot = commands.Bot(command_prefix=',', description=description, pm_help=True, help_attrs=help_attrs)
 
@@ -81,7 +81,7 @@ async def on_member_ban(member):
 @bot.event
 async def on_message(message):
     # lm = load_messages()
-    # server = message.server
+    server = message.server
     # svr = lm[server.id]
     # author = message.author.mention
     # shill = lm[server.id]["severShill"]
@@ -93,7 +93,6 @@ async def on_message(message):
 
     if message.author.bot:
         return
-
     elif message.content.startswith('+rip Inkxbot'):
         await asyncio.sleep(8)
         await bot.send_typing(message.channel)
@@ -118,19 +117,17 @@ async def on_message(message):
         await asyncio.sleep(1)
         await bot.send_message(message.channel, "Sticks and Stones may break my bolts, but lazer cannons never hurt me.")
 
-    elif message.content.startswith('<@245648163837444097>'):
-        await bot.send_typing(message.channel)
-        await asyncio.sleep(1)
-        await bot.send_message(message.channel, "What the hell do you want from me. ~~type ,about you nerd~~")
-
     elif message.content.startswith('(╯°□°）╯︵ ┻━┻'):
-        await bot.send_message(message.channel, "┬─┬ ノ( T_Tノ)")
+        if server.id == "110373943822540800":
+            await asyncio.sleep(1)
+        else:
+            await bot.send_message(message.channel, "┬─┬ ノ( T_Tノ)")
 
     elif message.content.startswith('/tableflip'):
-        await bot.send_message(message.channel, "┬─┬ ノ( T_Tノ)")
-
-    elif message.content.startswith(',,'):
-        await bot.send_message(message.channel, "My prefix changed you nerd. It's just one comma now")
+        if server.id == "110373943822540800": # the mods on Dbots don't want the bot to respond there
+            await asyncio.sleep(1)
+        else:
+            await bot.send_message(message.channel, "┬─┬ ノ( T_Tノ)")
 
 
     # elif invite_syntax.search(message.content):
