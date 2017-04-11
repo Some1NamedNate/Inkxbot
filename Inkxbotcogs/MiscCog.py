@@ -32,14 +32,6 @@ class Misc:
         await asyncio.sleep(1)
         await self.bot.say("PEW PEW PEW! PEW PEW PEW PEW PEW! SHUT THE FUCK UP")
 
-    @commands.command(pass_context=True)
-    async def cryo(self, ctx):
-        """I will imitate Cryo"""
-        typetochan = ctx.message.channel
-        await self.bot.send_typing(typetochan)
-        await asyncio.sleep(1)
-        await self.bot.say("PEW PEW PEW! PEW PEW PEW PEW PEW! SHUT THE F##K UP")
-
     @commands.command(pass_context=True, hidden=True)
     async def coreygasm(self, ctx):
         """coreygasm"""
