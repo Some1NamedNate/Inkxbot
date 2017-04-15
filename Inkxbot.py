@@ -13,7 +13,7 @@ import subprocess
 from collections import Counter
 
 
-description = 'My command list is right here, each is used with a comma' # or a period' (in the future)
+description = 'My command list is right here, each is used with a comma, Examples are shown after the command names'
 
 
 # this specifies what extensions to load when the bot starts up
@@ -28,7 +28,8 @@ startup_extensions = ["Inkxbotcogs.SplatoonCog",
                       "Inkxbotcogs.ScoresForBattles",
                       "Inkxbotcogs.MetaCog",
                       "Inkxbotcogs.ChallongeCog",
-                      "Inkxbotcogs.StatsCog"
+                      "Inkxbotcogs.StatsCog",
+                      "Inkxbotcogs.EasterEggs"
                       ]
 
 
@@ -88,7 +89,7 @@ async def on_message(message):
     # forbode = lm[server.id]["forbode"]
     # shillmsg = shill.format(author)
     # fbmsg = forbode.format(author)
-	# notdeadem = discord.Embed(title="", color=0xFF8C00))
+    # notdeadem = discord.Embed(title="", color=0xFF8C00))
 
 
     if message.author.bot:
@@ -139,6 +140,29 @@ async def on_message(message):
             # await bot.send_message(message.channel, shillmsg)
 
     await bot.process_commands(message)
+
+
+@bot.event
+async def on_command_error(error, ctx):
+    if isinstance(error, commands.NoPrivateMessage):
+        await bot.send_typing(ctx.message.author)
+        await asyncio.sleep(1)
+        await bot.send_message(ctx.message.author, "Um... this command can't be used in private messages.")
+    elif isinstance(error, commands.DisabledCommand):
+        await bot.send_typing(ctx.message.author)
+        await asyncio.sleep(1)
+        await bot.send_message(ctx.message.author, "I'm Sorry. This command is disabled and it can't be used.")
+    elif isinstance(error, commands.CommandInvokeError):
+        print('In {0.command.qualified_name}:'.format(ctx), file=sys.stderr)
+        traceback.print_tb(error.original.__traceback__)
+        print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr)
+    elif isinstance(error, commands.CommandNotFound):
+        log.info("'{0.message.author}' in {0.message.server} used a command thats not in Inkxbot, the content is resent here: '{0.message.content}'".format(ctx))
+    elif isinstance(error, commands.MissingRequiredArgument):
+        log.info("'{0.message.author}' in {0.message.server} was missing some arguments in a command, message is resent here: '{0.message.content}'".format(ctx))
+        await bot.send_typing(ctx.message.channel)
+        await asyncio.sleep(1)
+        await bot.send_message(ctx.message.channel, "It seems you are missing required argument(s). Try again if you have all the arguments needed.")
 
 
 @bot.event
