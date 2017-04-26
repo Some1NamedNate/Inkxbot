@@ -1,6 +1,8 @@
 import aiohttp
 import json
 import logging
+import discord
+
 
 log = logging.getLogger()
 
@@ -25,7 +27,7 @@ class Discordlist:
             #'servercount': len(self.bot.servers)
         #}
 
-        #async with self.session.post(CARBONAPIBOTDATA, data=carbon_payload) as resp:
+        #async with self.ses sion.post(CARBONAPIBOTDATA, data=carbon_payload) as resp:
             #log.info('Carbon statistics returned {0.status} for {1}'.format(resp, carbon_payload))
 
         payload = json.dumps({
@@ -46,13 +48,19 @@ class Discordlist:
             "token": self.bot.discordlist_token,
             "servers": len(self.bot.servers)
         }
+
+        serverdata = {
+            "servers": len(self.bot.servers)
+        }
+
         url = "https://bots.discordlist.net/api.php"
         resp = await aiohttp.post(url, data=dlpayload)
         resp.close()
         async with self.session.post(url, data=dlpayload) as resp:
-            log.info('DiscordList statistics returned {0.status} for {1}'.format(resp, dlpayload))
+            log.info('DiscordList statistics returned {0.status} for {1}'.format(resp, serverdata))
 
     async def on_server_join(self, server):
+        await self.bot.send_message(server, "Thank you for adding me to your server! I'll be a plessure to help with many things for you! type `,help` for information on my commands!")
         await self.update()
 
     async def on_server_remove(self, server):
