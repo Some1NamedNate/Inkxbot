@@ -12,7 +12,7 @@ class Destiny:
 
     @commands.command(pass_context=True)
     async def deswiki(self, title, ctx):
-        """Returns a Destinypedia page. For spaces use underscores."""
+        """Returns a Destinypedia page: ,deswiki 'Ghost'"""
         url = 'http://destiny.wikia.com/wiki/' + urlquote(title)
         typetochan = ctx.message.channel
         async with aiohttp.get(url) as resp:

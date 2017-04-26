@@ -11,17 +11,17 @@ class Just_Dance:
 
     @commands.command()
     async def justdancewiki(self, args):
-        """Returns a justdancewikia page. For spaces use underscores."""
+        """Returns a justdancewiki page: ,justdancewiki "I Love It" """
         url = 'http://justdance.wikia.com/wiki/' + urlquote(args)
         async with aiohttp.get(url) as resp:
             if resp.status == 404:
-                await self.bot.say('Could not find your page. Try a search:\n{0.url}'.format(resp))
+                await self.bot.say('Could not find your page. Try a search:\n<{0.url}>'.format(resp))
             elif resp.status == 200:
                 await self.bot.say(resp.url)
             elif resp.status == 502:
                 await self.bot.say('Seems like the Just Dance Wiki is taking too long to respond. Try again later.')
             else:
-                await self.bot.say('An error has occurred of status code {0.status} happened. Tell Inkx.'.format(resp))
+                await self.bot.say('An error has occurred of a status code {0.status} happened. Tell Inkx.'.format(resp))
 
     @commands.command(pass_context=True)
     async def sgmd(self, ctx):

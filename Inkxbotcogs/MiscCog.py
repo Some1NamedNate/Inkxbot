@@ -67,9 +67,50 @@ class Misc:
         """Slap someone!"""
         typetochan = ctx.message.channel
         user = ctx.message.author.mention
-        await self.bot.send_typing(typetochan)
-        await asyncio.sleep(1)
-        await self.bot.say('**SMACK!** *{0} slaps {1}*'.format(user, args))
+        if args == "<@245648163837444097>":
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("Don't think about slapping me \U0001f621")
+        elif args == " <@245648163837444097> ":
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("Don't think about slapping me \U0001f621")
+        elif args == ctx.message.author.mention:
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("Way to go, you just slaped yourself.")
+        elif args == ctx.message.author.name:
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("Way to go, you just slaped yourself.")
+        elif args == "@everyone":
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("That is totaly breaking the rules...")
+        elif args == "@here":
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("That is totaly breaking the rules...")
+        elif args == "/@everyone":
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("That is totaly breaking the rules...")
+        elif args == "/@here":
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("That is totaly breaking the rules...")
+        elif args == "\@everyone":
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("That is totaly breaking the rules...")
+        elif args == "\@here":
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say("That is totaly breaking the rules...")
+        else:
+            await self.bot.send_typing(typetochan)
+            await asyncio.sleep(1)
+            await self.bot.say('**SMACK!** *{0} slaps {1}*'.format(user, args))
 
     @commands.command(pass_context=True)
     async def add(self, ctx):
@@ -87,12 +128,7 @@ class Misc:
         await asyncio.sleep(8)
         await self.bot.say("There, I'm done typing for you")
 
-    @commands.command(pass_context=True, hidden=True)
-    async def play(self, ctx):
-        typetochan = ctx.message.channel
-        await self.bot.send_typing(typetochan)
-        await asyncio.sleep(1)
-        await self.bot.say("Music coming soon from my music counterpart")
+
 
 def setup(bot):
     bot.add_cog(Misc(bot))

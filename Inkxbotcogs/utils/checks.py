@@ -41,8 +41,17 @@ def role_or_permissions(ctx, check, **perms):
 
 def mod_or_permissions(**perms):
     def predicate(ctx):
-        return role_or_permissions(ctx, lambda r: r.name in ('Bot Commander'), **perms)
+        return role_or_permissions(ctx, lambda r: r.name == 'Bot Commander', **perms)
+    return commands.check(predicate)
 
+def admin_or_permissions(**perms):
+    def predicate(ctx):
+        return role_or_permissions(ctx, lambda r: r.name == 'Bot Commander', **perms)
+    return commands.check(predicate)
+
+def TO_or_permissions(**perms):
+    def predicate(ctx):
+        return role_or_permissions(ctx, lambda r: r.name in ('TO_Crew', 'Head TO', 'Staff'), **perms) #these roles are needed if you're a TO
     return commands.check(predicate)
 
 def is_in_servers(*server_ids):

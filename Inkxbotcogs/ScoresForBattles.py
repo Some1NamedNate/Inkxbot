@@ -21,7 +21,7 @@ class Scoring:
     @commands.command(aliases=['p'], pass_context=True, no_pm=True, hidden=False)
     @checks.mod_or_permissions()
     async def post(self, ctx, battle, homescr, args, awayscr):
-        """posts a scrim score in a #scrim-scores channel \n You will need a 'Bot Commander' role in order to use this \n EXAMPLE: ,post 'Tournament or Scrim' 2 'name of clan you scrimed against' 1"""
+        """posts a scrim score. You will need a 'Bot Commander' role in order to use this EXAMPLE: ,post 'Tournament or Scrim' 2 'name of clan you scrimed against' 1"""
         teams = load_teams()
         trnys = load_trnynames()
         if battle == 'scrim':

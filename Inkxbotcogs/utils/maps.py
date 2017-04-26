@@ -39,7 +39,7 @@ class Rotation(object):
         else:
             prefix = '**Current Rotation**\n'
 
-        fmt = '*__{1}__* {2[0]} and {2[1]}\n*__Turf War__* s{0[0]} and {0[1]}'
+        fmt = '*__{1}__* {2[0]} and {2[1]}\n*__Turf War__* {0[0]} and {0[1]}'
         return prefix + fmt.format(self.turf_maps, self.ranked_mode, self.ranked_maps)
 
 # based on https://github.com/Wiwiweb/SakuraiBot/blob/master/src/sakuraibot.py

@@ -30,7 +30,7 @@ class Hearthstone:
 
     @commands.command(pass_context=True)
     async def hearthwiki(self, title, ctx):
-        """Returns a hearthstone wiki page. For spaces use underscores."""
+        """Returns a hearthstone wiki page: ,hearthwiki 'card name'"""
         url = 'http://hearthstone.wikia.com/wiki/' + urlquote(title)
 
         typetochan = ctx.message.channel
