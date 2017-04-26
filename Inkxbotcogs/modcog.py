@@ -24,7 +24,7 @@ class Moderation:
 
 
     @commands.command(pass_context=True, no_pm=True, name = 'clear')
-    @commands.has_role('Bot Commander')
+    @checks.mod_or_permissions(move_members=True)
     async def _clear(self, ctx, amount : int = 100):
         """Deletes my messages.
         You will need a 'Bot Commander' role in order to use this"""
@@ -42,23 +42,23 @@ class Moderation:
         await asyncio.sleep(1)
         await self.bot.delete_message(channel, limit=1, around=ctx.message)
 
-    @commands.command(pass_context=True, no_pm=True)
-    @checks.mod_or_permissions()
+    @commands.command(invoke_without_command=True, pass_context=True, no_pm=True)
+    @checks.mod_or_permissions(move_members=True)
     async def purge(self, ctx, amount : int = 5):
         """Deletes specified number of messages.
         You must have a 'Bot Commander' role in order to use this"""
         channel = ctx.message.channel
         await self.bot.purge_from(channel, limit=amount, before=ctx.message)
         await self.bot.say('Deleted {0}'.format(amount))
-        await asyncio.sleep(2)
-        await self.bot.delete_message(channel, limit=1, around=ctx.message)
+
 
     @commands.command(pass_context=True, no_pm=True)
-    @checks.mod_or_permissions()
+    @checks.mod_or_permissions(manage_roles=True)
     async def give(self, ctx, rolename, user: discord.Member=None):
         """Gives a role to a user, defaults to author
         Role name must be in quotes if there are spaces.
-        You must have a 'Bot Commander' role in order to use this"""
+        You must have a 'Bot Commander' role in order to use this
+        You also must have permissions to manage roles"""
         author = ctx.message.author
         channel = ctx.message.channel
         server = ctx.message.server
@@ -86,7 +86,7 @@ class Moderation:
         await self.bot.say('I have given the {} role to {}'.format(role.name, user.name))
 
     @commands.command(pass_context=True, no_pm=True, name = 'remove')
-    @checks.mod_or_permissions()
+    @checks.mod_or_permissions(manage_roles=True)
     async def _remove(self, ctx, rolename, user: discord.Member=None):
         """Removes a role from user, defaults to author
         Role name must be in quotes if there are spaces.
