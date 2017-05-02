@@ -70,7 +70,23 @@ async def on_ready():
     print('--------------------------------')
     if not hasattr(bot, 'uptime'):
         bot.uptime = datetime.datetime.utcnow()
-    await bot.change_presence(game=discord.Game(name='https://inkxbot.wordpress.com'))
+    bot.task = bot.loop.create_task(background_task())
+
+
+async def background_task():
+    # this background task is for changing the playing status
+    await bot.wait_until_ready()
+    while not bot.is_closed:
+        await bot.change_presence(game=discord.Game(name='https://inkxbot.wordpress.com'), status=discord.Status.online)
+        await asyncio.sleep(30)
+        await bot.change_presence(game=discord.Game(name=',help | {} servers'.format(len(bot.servers))), status=discord.Status.online)
+        await asyncio.sleep(30)
+        await bot.change_presence(game=discord.Game(name=',help for info'), status=discord.Status.online)
+        await asyncio.sleep(30)
+        await bot.change_presence(game=discord.Game(name='PSnews: coming soon...'), status=discord.Status.online)
+        await asyncio.sleep(4)
+        await bot.change_presence(game=discord.Game(name='PSnews: more Challonge functions!'), status=discord.Status.online)
+        await asyncio.sleep(6)
 
 @bot.event
 async def on_member_ban(member):
@@ -179,6 +195,19 @@ async def do(ctx, times : int, *, command):
         await bot.process_commands(msg)
 
 
+@bot.command(pass_context=True, hidden=True)
+@checks.is_owner()
+async def shutdown(ctx):
+    """Shuts down the bot: owner only"""
+    channel = ctx.message.channel
+    task = bot.loop.create_task(background_task())
+    await bot.send_typing(channel)
+    await asyncio.sleep(1)
+    await bot.say("shutting down...")
+    bot.task.cancel()
+    await bot.change_presence(game=None, status=discord.Status.invisible)
+    await asyncio.sleep(1)
+    os._exit(0)
 
 def load_credentials():
     with open('credentials.json') as f:
