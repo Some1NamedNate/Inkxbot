@@ -9,4 +9,4 @@ this is the repository is where I show Inkxbot's code
 - the Async version of discord.py ~~CURRENTLY WORKING ON MAKING IT ELIGIBLE FOR REWRITE~~
 - lxml
 - pyChallonge
-- selenium
+- Selenium WebDriver
