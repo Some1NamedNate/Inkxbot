@@ -79,6 +79,8 @@ async def background_task():
     while not bot.is_closed:
         await bot.change_presence(game=discord.Game(name='https://inkxbot.wordpress.com'), status=discord.Status.online)
         await asyncio.sleep(30)
+        await bot.change_presence(game=discord.Game(name='https://inkxthesquid.github.io'), status=discord.Status.online)
+        await asyncio.sleep(30)
         await bot.change_presence(game=discord.Game(name=',help | {} servers'.format(len(bot.servers))), status=discord.Status.online)
         await asyncio.sleep(30)
         await bot.change_presence(game=discord.Game(name=',help for info'), status=discord.Status.online)
