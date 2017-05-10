@@ -85,10 +85,6 @@ async def background_task():
         await asyncio.sleep(30)
         await bot.change_presence(game=discord.Game(name=',help for info'), status=discord.Status.online)
         await asyncio.sleep(30)
-        await bot.change_presence(game=discord.Game(name='PSnews: coming soon...'), status=discord.Status.online)
-        await asyncio.sleep(4)
-        await bot.change_presence(game=discord.Game(name='PSnews: more Challonge functions!'), status=discord.Status.online)
-        await asyncio.sleep(6)
 
 @bot.event
 async def on_member_ban(member):
