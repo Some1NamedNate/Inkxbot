@@ -18,16 +18,16 @@ class Stats:
     def __init__(self, bot):
         self.bot = bot
 
-    async def on_command(self, command, ctx):
+    async def on_command(self, ctx):
         self.bot.commands_used[ctx.command.qualified_name] += 1
         message = ctx.message
         destination = None
-        if message.channel.is_private:
-            destination = 'Private Message'
+        if isinstance(message.channel, discord.abc.PrivateChannel):
+            destination = 'DM'
         else:
-            destination = '#{0.channel.name} ({0.server.name})'.format(message)
+            destination = '#{0.channel.name} ({0.guild.name})'.format(message)
 
-        log.info('{0.timestamp}: {0.author.name} in {1}: {0.content}'.format(message, destination))
+        log.info('{0.created_at}: {0.author.name} in {1}: {0.content}'.format(message, destination))
 
     async def on_socket_response(self, msg):
         self.bot.socket_stats[msg.get('t')] += 1
@@ -48,19 +48,6 @@ class Stats:
         for page in p.pages:
             await self.bot.say(page)
 
-    @commands.command(hidden=True, pass_context=True)
-    async def socketstats(self, ctx):
-        delta = datetime.datetime.utcnow() - self.bot.uptime
-        minutes = delta.total_seconds() / 60
-        total = sum(self.bot.socket_stats.values())
-        cpm = total / minutes
-
-        fmt = '%s socket events observed (%.2f/minute):\n%s'
-        typetochan = ctx.message.channel
-        await self.bot.send_typing(typetochan)
-        await asyncio.sleep(1)
-        await self.bot.say(fmt % (total, cpm, self.bot.socket_stats))
-
     def get_bot_uptime(self, *, brief=False):
         now = datetime.datetime.utcnow()
         delta = now - self.bot.uptime
@@ -80,11 +67,12 @@ class Stats:
 
         return fmt.format(d=days, h=hours, m=minutes, s=seconds)
 
+
     @commands.command(hidden=True)
-    @checks.is_owner()
-    async def uptime(self):
+    @commands.is_owner()
+    async def uptime(self, ctx):
         """Tells you how long I have been up for."""
-        await self.bot.say('Uptime: **{}**'.format(self.get_bot_uptime()))
+        await ctx.send('Uptime: **{}**'.format(self.get_bot_uptime()))
 
 
     @commands.command(aliases=['inkxbot', 'Inkxbot'], pass_context=True)
@@ -102,31 +90,26 @@ class Stats:
         embed.set_author(name=str(owner), icon_url=owner.avatar_url)
 
         # statistics
-        total_members = sum(len(s.members) for s in self.bot.servers)
+        total_members = sum(len(s.members) for s in self.bot.guilds)
         total_online  = sum(1 for m in self.bot.get_all_members() if m.status != discord.Status.offline)
         unique_members = set(self.bot.get_all_members())
         unique_online = sum(1 for m in unique_members if m.status != discord.Status.offline)
-        channel_types = Counter(c.type for c in self.bot.get_all_channels())
-        voice = channel_types[discord.ChannelType.voice]
-        text = channel_types[discord.ChannelType.text]
 
         members = '%s total\n%s online\n%s unique\n%s unique online' % (total_members, total_online, len(unique_members), unique_online)
         embed.add_field(name='Members', value=members)
-        embed.add_field(name='Channels', value='{} total\n{} text\n{} voice'.format(text + voice, text, voice))
         embed.add_field(name='Uptime', value=self.get_bot_uptime(brief=True))
         embed.set_footer(text='Made with discord.py', icon_url='http://i.imgur.com/5BFecvA.png')
         embed.timestamp = self.bot.uptime
 
-        embed.add_field(name='Servers', value=len(self.bot.servers))
+        embed.add_field(name='Servers', value=len(self.bot.guilds))
         embed.add_field(name='Commands Run', value=sum(self.bot.commands_used.values()))
 
         memory_usage = psutil.Process().memory_full_info().uss / 1024**2
         embed.add_field(name='Memory Usage', value='{:.2f} MiB'.format(memory_usage))
 
-        typetochan = ctx.message.channel
-        await self.bot.send_typing(typetochan)
+        await ctx.trigger_typing()
         await asyncio.sleep(1)
-        await self.bot.say(embed=embed)
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.commands_used = Counter()
