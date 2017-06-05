@@ -7,23 +7,23 @@ import requests
 
 class Destiny:
     def __init__(self, bot):
-        self.bot = bot     
-        #self.loop = AbstractEventLoop.run_in_executor()         
+        self.bot = bot
+        #self.loop = AbstractEventLoop.run_in_executor()
 
-    @commands.command()
-    async def deswiki(self, title):
-        """Returns a Destinypedia page. For spaces use underscores."""
+    @commands.command(pass_context=True)
+    async def deswiki(self, title, ctx):
+        """Returns a Destinypedia page: ,deswiki 'Ghost'"""
         url = 'http://destiny.wikia.com/wiki/' + urlquote(title)
-
+        typetochan = ctx.message.channel
         async with aiohttp.get(url) as resp:
             if resp.status == 404:
-                await self.bot.say('Could not find your page. Try a search:\n{0.url}'.format(resp))
+                await ctx.send('Could not find your page. Try a search:\n{0.url}'.format(resp))
             elif resp.status == 200:
-                await self.bot.say(resp.url)
+                await ctx.send(resp.url)
             elif resp.status == 502:
-                await self.bot.say('Seems like the Destinypedia is taking too long to respond. Try again later.')
+                await ctx.send('Seems like the Destinypedia is taking too long to respond. Try again later.')
             else:
-                await self.bot.say('An error has occurred of status code {0.status} has happened. Tell Inkx.'.format(resp))
+                await ctx.send('An error has occurred of status code {0.status} happened. Tell Inkx.'.format(resp))
 
 def setup(bot):
     bot.add_cog(Destiny(bot))

@@ -33,8 +33,8 @@ class Stats:
         self.bot.socket_stats[msg.get('t')] += 1
 
     @commands.command(hidden=True)
-    @checks.is_owner()
-    async def commandstats(self):
+    @commands.is_owner()
+    async def commandstats(self, ctx):
         p = commands.Paginator()
         counter = self.bot.commands_used
         width = len(max(counter, key=len))
@@ -75,7 +75,7 @@ class Stats:
         await ctx.send('Uptime: **{}**'.format(self.get_bot_uptime()))
 
 
-    @commands.command(aliases=['inkxbot', 'Inkxbot'], pass_context=True)
+    @commands.command(aliases=['inkxbot', 'Inkxbot'])
     async def about(self, ctx):
         """Tells you information about myself."""
 
@@ -110,6 +110,8 @@ class Stats:
         await ctx.trigger_typing()
         await asyncio.sleep(1)
         await ctx.send(embed=embed)
+
+
 
 def setup(bot):
     bot.commands_used = Counter()

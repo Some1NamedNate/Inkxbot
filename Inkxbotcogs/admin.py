@@ -1,5 +1,5 @@
 from discord.ext import commands
-from .utils import checks
+from .utils import checksre
 import discord
 import inspect
 
@@ -13,48 +13,64 @@ class Admin:
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(hidden=True)
-    @checks.is_owner()
-    async def load(self, *, module : str):
+    @commands.command(hidden=True, pass_context=True)
+    @commands.is_owner()
+    async def load(self, ctx, *, module : str):
         """Loads a module."""
-        extention = "Inkxbotcogs." + module
+        extention = "cogs." + module
         try:
             self.bot.load_extension(extention)
         except Exception as e:
-            await self.bot.say('BAKA!')
-            await self.bot.say('{}: {}'.format(type(e).__name__, e))
+            await ctx.send('\U0001f6ab')
+            await ctx.send('{}: {}'.format(type(e).__name__, e))
         else:
-            await self.bot.say('All done sir')
+            await ctx.send('<:radithumbsup:317056486297829386>')
+
+    @commands.command(hidden=True, pass_context=True)
+    @commands.is_owner()
+    async def unload(self, ctx, *, module : str):
+        """Unloads a module."""
+        extention = "cogs." + module
+        try:
+            self.bot.unload_extension(extention)
+        except Exception as e:
+            await ctx.send('\U0001f6ab')
+            await ctx.send('{}: {}'.format(type(e).__name__, e))
+        else:
+            await ctx.send('<:radithumbsup:317056486297829386>')
+
+    @commands.command(name='reload', hidden=True, pass_context=True)
+    @commands.is_owner()
+    async def _reload(self, ctx, *, module : str):
+        """Reloads a module."""
+        extention = "cogs." + module
+        try:
+            self.bot.unload_extension(extention)
+            self.bot.load_extension(extention)
+        except Exception as e:
+            await ctx.send('\U0001f6ab')
+            await ctx.send('{}: {}'.format(type(e).__name__, e))
+        else:
+            await ctx.send('<:radithumbsup:317056486297829386>')
+
+    @commands.command(name = 'clean')
+    @commands.is_owner()
+    async def clean(self, amount : int = 100):
+        """Deletes my messages.
+        You will need a 'Bot Commander' role in order to use this"""
+
+        calls = 0;
+        async for msg in channel.history(limit=amount, before=ctx.message):
+            if calls and calls % 5 == 0:
+                await asyncio.sleep(1.5)
+
+            if msg.author == self.bot.user:
+                await ctx.delete(msg)
+                calls += 1
+        await ctx.send('Deleted {0}'.format(calls), delete_after=3.0)
 
     @commands.command(hidden=True)
-    @checks.is_owner()
-    async def unload(self, *, module : str):
-        """Unloads a module."""
-        extention = "Inkxbotcogs." + module
-        try:
-            self.bot.unload_extension(extention)
-        except Exception as e:
-            await self.bot.say('BAKA!')
-            await self.bot.say('{}: {}'.format(type(e).__name__, e))
-        else:
-            await self.bot.say('All done sir')
-
-    @commands.command(name='reload', hidden=True)
-    @checks.is_owner()
-    async def _reload(self, *, module : str):
-        """Reloads a module."""
-        extention = "Inkxbotcogs." + module
-        try:
-            self.bot.unload_extension(extention)
-            self.bot.load_extension(extention)
-        except Exception as e:
-            await self.bot.say('BAKA!')
-            await self.bot.say('{}: {}'.format(type(e).__name__, e))
-        else:
-            await self.bot.say('All done sir')
-
-    @commands.command(pass_context=True, hidden=True)
-    @checks.is_owner()
+    @commands.is_owner()
     async def debug(self, ctx, *, code : str):
         """Evaluates code."""
         code = code.strip('` ')
@@ -62,10 +78,10 @@ class Admin:
         result = None
 
         env = {
-            'bot': self.bot,
+            'inkxbot': self.bot,
             'ctx': ctx,
             'message': ctx.message,
-            'server': ctx.message.server,
+            'guild': ctx.message.guild,
             'channel': ctx.message.channel,
             'author': ctx.message.author
         }
@@ -77,21 +93,11 @@ class Admin:
             if inspect.isawaitable(result):
                 result = await result
         except Exception as e:
-            await self.bot.say(python.format(type(e).__name__ + ': ' + str(e)))
+            await ctx.send('<:radithink:316999358333714432>' + python.format(type(e).__name__ + ': ' + str(e)))
             return
 
-        await self.bot.say(python.format(result))
-        
-    
-    
-    @commands.command(pass_context=True, hidden=True)
-    @checks.is_owner()
-    async def newstuff(self):
-        """sends a message about a new feature in all servers"""
-        await self.bot.say("All done sir")
-        await self.bot.send_message(discord.Object(id='248106639410855936'), "@here, A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
-        await self.bot.send_message(discord.Object(id='227514633735372801'), "A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
-        await self.bot.send_message(discord.Object(id='258350226279104512'), "A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
+        await ctx.send('<:radithink:316999358333714432>' + python.format(result))
+
 
 def setup(bot):
     bot.add_cog(Admin(bot))

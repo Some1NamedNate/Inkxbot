@@ -24,7 +24,7 @@ class Discordlist:
         # Matt hasn't given me a key yet
     #    carbon_payload = {
             #'key': self.bot.carbon_key,
-            #'servercount': len(self.bot.servers)
+            #'servercount': len(self.bot.guilds)
         #}
 
         #async with self.ses sion.post(CARBONAPIBOTDATA, data=carbon_payload) as resp:
@@ -39,7 +39,7 @@ class Discordlist:
             'content-type': 'application/json'
         }
 
-        url = '{0}/bots/{1.user.id}/stats'.format(DBOTSAPI, self.bot)
+        url = '{0}/bots/245648163837444097/stats'.format(DBOTSAPI)
         async with self.session.post(url, data=payload, headers=headers) as resp:
             log.info('DBots statistics returned {0.status} for {1}'.format(resp, payload))
 
@@ -53,11 +53,9 @@ class Discordlist:
             "servers": len(self.bot.guilds)
         }
 
-        url = "https://bots.discordlist.net/api.php"
-        resp = await aiohttp.post(url, data=dlpayload)
-        resp.close()
-        async with self.session.post(url, data=dlpayload) as resp:
-            log.info('DiscordList statistics returned {0.status} for {1}'.format(resp, serverdata))
+        dlisturl = "https://bots.discordlist.net/api.php"
+        async with self.session.post(dlisturl, data=dlpayload) as resp:
+            log.info('DiscordList statistics returned {0.status} for {1}'.format(resp, dlpayload))
 
     async def on_guild_join(self, guild):
         await guild.send("Thank you for adding me to your server! I'll be a plessure to help with many things for you! type `,help` for information on my commands!")
