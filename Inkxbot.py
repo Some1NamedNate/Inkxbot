@@ -11,6 +11,8 @@ import copy
 import logging
 import traceback
 import sys
+import subprocess
+from cogs.utils import checks
 from collections import Counter
 
 
@@ -18,15 +20,19 @@ description = 'My command list is right here, each is used with a comma' # or a 
 
 
 # this specifies what extensions to load when the bot starts up
-startup_extensions = ["Inkxbotcogs.SplatoonCog",
-                      "Inkxbotcogs.JustdanceCog",
-                      "Inkxbotcogs.HearthstoneCog",
-                      "Inkxbotcogs.DestinyCog",
-                      "Inkxbotcogs.admin",
-                      "Inkxbotcogs.modcog",
-                      "Inkxbotcogs.MiscCog",
-                      "Inkxbotcogs.discordlist",
-                      "Inkxbotcogs.ScoresForBattles"
+startup_extensions = ["cogs.SplatoonCog",
+                      "cogs.JustdanceCog",
+                      "cogs.HearthstoneCog",
+                      "cogs.DestinyCog",
+                      "cogs.admin",
+                      "cogs.modcog",
+                      "cogs.MiscCog",
+                      "cogs.dbots",
+                      "cogs.ScoresForBattles",
+                      "cogs.MetaCog",
+                      "cogs.ChallongeCog",
+                      "cogs.EasterEggs",
+                      "cogs.StatsCog"
                       ]
 
 
@@ -52,117 +58,128 @@ def load_messages():
 
 @bot.event
 async def on_member_join(member):
-    server = member.server
+    guild = member.guild
     messages = load_messages()
-    if server.id not in messages: return
-    if "welcome" not in messages[server.id]: return
-    srv = messages[server.id]
-    wlc = messages[server.id]['welcome'].format(member)
-    await bot.send_message(server, wlc)
+    guildstr = str(guild.id)
+    if guildstr not in messages: return
+    if 'welcome' not in messages[guildstr]: return
+    srv = messages[guildstr]
+    wlc = messages[guildstr]['welcome'].format(member)
+    await guild.default_channel.send(wlc)
 
 @bot.event
 async def on_ready():
     print('Inkxbot is logged in and online!')
+    print("discord.py version is " + discord.__version__)
     print('--------------------------------')
-    await bot.change_presence(game=discord.Game(name='https://inkxbot.wordpress.com'))
-    #await bot.send_message(discord.Object(id='248106639410855936'), "@here, A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
-    #await bot.send_message(discord.Object(id='227514633735372801'), "A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
-    #await bot.send_message(discord.Object(id='258350226279104512'), "A new WordPress post about my development has been made, check it out at <https://inkxbot.wordpress.com/>")
+    if not hasattr(bot, 'uptime'):
+        bot.uptime = datetime.datetime.utcnow()
+    bot.task = bot.loop.create_task(background_task())
 
+
+async def background_task():
+    # this background task is for changing the playing status
+    await bot.wait_until_ready()
+    while not bot.is_closed():
+        await bot.change_presence(game=discord.Game(name='https://inkxbot.wordpress.com'))
+        await asyncio.sleep(30)
+        await bot.change_presence(game=discord.Game(name='https://inkxthesquid.github.io'))
+        await asyncio.sleep(30)
+        await bot.change_presence(game=discord.Game(name=',help | {} servers'.format(len(bot.guilds))))
+        await asyncio.sleep(30)
+        await bot.change_presence(game=discord.Game(name=',help for info'))
+        await asyncio.sleep(30)
+        await bot.change_presence(game=discord.Game(name='PSnews: BREAKING NEWS!'))
+        await asyncio.sleep(3)
+        await bot.change_presence(game=discord.Game(name='PSnews: Inkxbot has been rewritten!'))
+        await asyncio.sleep(6)
 
 @bot.event
-async def on_member_ban(member):
-    for channel in member.server.channels:
+async def on_member_ban(guild, user):
+    for channel in guild.channels:
         if channel.name == "banlogs":
-            await bot.send_message(channel, content="**BAN** \n**User**: {0}".format(member))
+            await channel.send("**BAN** \n**User**: {0}".format(user))
             break
 @bot.event
 async def on_message(message):
-    #~ lm = load_messages()
-    #~ server = message.server
-    #~ svr = lm[server.id]
-    #~ author = message.author.mention
-    #~ shill = lm[server.id]["severShill"]
-    #~ forbode = lm[server.id]["forbode"]
-    #~ shillmsg = shill.format(author)
-    #~ fbmsg = forbode.format(author)
-	#~ notdeadem = discord.Embed(title="", color=0xFF8C00))
-
-    if message.content.startswith('+rip Inkxbot'):
-        await asyncio.sleep(8)
-        await bot.send_typing(message.channel)
-        await asyncio.sleep(2)
-        await bot.send_message(message.channel, "That's a lie.")
-
-    elif message.content.startswith('+rip <@245648163837444097>'):
-        await asyncio.sleep(8)
-        await bot.send_typing(message.channel)
-        await asyncio.sleep(2)
-        await bot.send_message(message.channel, "That's a lie.")
-    
-    elif message.content.startswith('+kill <@245648163837444097>'):
-        await asyncio.sleep(8)
-        await bot.send_typing(message.channel)
-        await asyncio.sleep(1)
-        await bot.send_message(message.channel, "Sticks and Stones may break my bolts, but lazer cannons never hurt me.")
-
-    elif message.content.startswith('+kill Inkxbot'):
-        await asyncio.sleep(8)
-        await bot.send_typing(message.channel)
-        await asyncio.sleep(1)
-        await bot.send_message(message.channel, "Sticks and Stones may break my bolts, but lazer cannons never hurt me.")
-
-    elif message.content.startswith('<@245648163837444097>'):
-        await bot.send_typing(message.channel)
-        await asyncio.sleep(1)
-        await bot.send_message(message.channel, "What the hell do you want from me. ~~type ,inkxbot you nerd~~")
-
-    elif message.content.startswith('(╯°□°）╯︵ ┻━┻'):    
-        await bot.send_message(message.channel, "┬─┬﻿ ノ( T_Tノ)")
-
-    elif message.content.startswith('/tableflip'):
-        await bot.send_message(message.channel, "┬─┬﻿ ノ( T_Tノ)")
-
-    elif message.content.startswith(',,'):
-        await bot.send_message(message.channel, "My prefix changed you nerd. It's just one comma now")
-        
-
-    #~ elif invite_syntax.search(message.content):
-        #~ if server.id == svr:
-            #~ if server.id not in svr: return
-            #~ if "forbode" not in svr: return
-            #~ await bot.send_message(message.channel, fbmsg)
-            #~ await asyncio.sleep(1)
-            #~ await bot.send_message(message.channel, shillmsg)
+    if message.author.bot:
+        return
 
     await bot.process_commands(message)
+
+@bot.event
+async def on_command_error(ctx, error):
+    channel = ctx.message.channel
+    author  = ctx.message.author
+    if isinstance(error, commands.NoPrivateMessage):
+        await discord.User.trigger_typing(author)
+        await asyncio.sleep(1)
+        await author.send("Um... this command can't be used in private messages.")
+    elif isinstance(error, commands.DisabledCommand):
+        channel = ctx.message.channel
+        await channel.trigger_typing()
+        await asyncio.sleep(1)
+        await channel.send("I'm Sorry. This command is disabled and it can't be used.")
+    elif isinstance(error, commands.CommandInvokeError):
+        channel = ctx.message.channel
+        print('In {0.command.qualified_name}:'.format(ctx), file=sys.stderr)
+        traceback.print_tb(error.original.__traceback__)
+        print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr)
+    elif isinstance(error, commands.CommandNotFound):
+        log.info("'{0.message.author}' from \"{0.message.guild}\" used a command thats not in Inkxbot, content is resent here: '{0.message.content}'".format(ctx))
+    elif isinstance(error, commands.MissingRequiredArgument):
+        log.info("'{0.message.author}' was missing some arguments in a command, message is resent here: '{0.message.content}'".format(ctx))
+        channel = ctx.message.channel
+        await channel.trigger_typing()
+        await asyncio.sleep(1)
+        await channel.send("It seems you are missing required argument(s). Try again if you have all the arguments needed.")
+
+@bot.event
+async def on_resumed():
+    print('resumed...')
+
+@bot.command(hidden=True)
+@commands.is_owner()
+async def do(ctx, times : int, *, command):
+    """Repeats a command a specified number of times."""
+    msg = copy.copy(ctx.message)
+    msg.content = command
+    for i in range(times):
+        await bot.process_commands(msg)
+
+@bot.command(hidden=True)
+@commands.is_owner()
+async def shutdown(ctx):
+    """Shuts down the bot: owner only"""
+    await ctx.trigger_typing()
+    await asyncio.sleep(1)
+    await ctx.send("shutting down...")
+    bot.task.cancel()
+    await bot.change_presence(game=None, status=discord.Status.invisible)
+    await asyncio.sleep(1)
+    await bot.close()
+    os._exit(0)
+
 
 def load_credentials():
     with open('credentials.json') as f:
         return json.load(f)
 
-async def post_on_discordlist():
-    credentials = load_credentials()
-    listtoken = credentials['listtoken']    
-    payload = {"token": listtoken,
-               "servers": len(bot.servers)
-              }
-    
-    listurl = "https://bots.discordlist.net/api.php"
-    resp = await aiohttp.post(listurl, data=payload)
-    resp.close()
 
 if __name__ == '__main__':
     credentials = load_credentials()
-    token = credentials['token']    
+    token = credentials['token']
     bot.client_id = credentials['client_id']
+    bot.carbon_key = credentials['carbon_key']
+    bot.discordlist_token = credentials['discordlist_token']
+    bot.dbots_key = credentials['dbots_key']
+    bot.challongekey = credentials['challongekey']
     bot.commands_used = Counter()
     for extension in startup_extensions:
         try:
             bot.load_extension(extension)
         except Exception as e:
             print('Failed to load extension {}\n{}: {}'.format(extension, type(e).__name__, e))
-
     bot.run(token)
     handlers = log.handlers[:]
     for hdlr in handlers:
