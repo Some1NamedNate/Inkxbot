@@ -21,14 +21,13 @@ class Discordlist:
         self.bot.loop.create_task(self.session.close())
 
     async def update(self):
-        # Matt hasn't given me a key yet
-    #    carbon_payload = {
-            #'key': self.bot.carbon_key,
-            #'servercount': len(self.bot.guilds)
-        #}
+        carbon_payload = {
+            'key': self.bot.carbon_key,
+            'servercount': len(self.bot.guilds)
+        }
 
-        #async with self.ses sion.post(CARBONAPIBOTDATA, data=carbon_payload) as resp:
-            #log.info('Carbon statistics returned {0.status} for {1}'.format(resp, carbon_payload))
+        async with self.ses sion.post(CARBONAPIBOTDATA, data=carbon_payload) as resp:
+            log.info('Carbon statistics returned {0.status} for {1}'.format(resp, carbon_payload))
 
         payload = json.dumps({
             'server_count': len(self.bot.guilds)
