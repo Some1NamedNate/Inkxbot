@@ -20,8 +20,8 @@ description = 'My command list is right here, each is used with a comma' # or a 
 
 
 # this specifies what extensions to load when the bot starts up
-startup_extensions = ["cogs.SplatoonCog",
-                      "cogs.JustdanceCog",
+startup_extensions = ["cogs.JustdanceCog",
+#                      "cogs.SplatoonCog",
                       "cogs.HearthstoneCog",
                       "cogs.DestinyCog",
                       "cogs.admin",
