@@ -79,7 +79,7 @@ class Stats:
     async def about(self, ctx):
         """Tells you information about myself."""
 
-        embed = discord.Embed(description='Latest Changes are at the WordPress blog: https://inkxbot.wordpress.com/')
+        embed = discord.Embed(description='Check https://inkxbot.github.io/ for a little documentation!')
         embed.colour = 0xff4500 # OrangeRed
 
         try:
