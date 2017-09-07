@@ -28,7 +28,7 @@ def mode_key(argument):
         raise commands.BadArgument('Unknown schedule type, try: "ranked", "regular", or "league"')
 
 class Splatoon:
-    """Splatoon related commands."""
+    """Splatoon 2 related commands."""
 
     def __init__(self, bot):
         self.bot = bot
@@ -60,17 +60,45 @@ class Splatoon:
             titlename = 'Current maps in Splatoon 2'
         else:
             titlename = 'Upcoming maps in Splatoon 2'
-        desc = "**Ranked Battle** \n*__{0}:__* {1} and {2} \n".format(rnkmd, r1, r2) + "**League Battle** \n*__{0}:__* {1} and {2} \n".format(lgemd, l1, l2) + "**Regualar Battle** \n*__Turf War:__* {0} and {1} \n".format(t1, t2)
+        desc = "**Ranked Battle** \n*__{0}:__* {1} and {2} \n".format(rnkmd, r1, r2) + "**League Battle** \n*__{0}:__* {1} and {2} \n".format(lgemd, l1, l2) + "**Regular Battle** \n*__Turf War:__* {0} and {1} \n".format(t1, t2)
         sched_embed = discord.Embed(title=titlename, description=desc, color=0xFF8C00)
         await ctx.trigger_typing()
         await asyncio.sleep(1)
         await ctx.send(embed=sched_embed)
 
-    #async def modetype_splatoon2_schedule(self, ctx, mode):
-        #sched_embed = discord.Embed(title='Current maps in Splatoon 2', description=desc, color=0xFF8C00)
-        #await ctx.trigger_typing()
-        #await asyncio.sleep(1)
-        #await ctx.send(embed=sched_embed)
+    async def modetype_splatoon2_schedule(self, ctx, mode):
+        splatoonjson = load_schedule()
+        dict = splatoonjson
+        if mode == 'Ranked Battle':
+            md = 'Ranked'
+            basebatt = 'gachi'
+        elif mode == 'League Battle':
+            md = 'League'
+            basebatt = 'league'
+        elif mode == 'Regular Battle':
+            md = 'Regular Battle'
+            basebatt = 'regular'
+        else:
+            log.info('something fucked up... fix it?')
+
+        sch = dict[basebatt]
+        sch1 = sch[0]
+        sch2 = sch[1]
+        sch3 = sch[2]
+        schmd1 = sch1['mode']['name']['en-US']
+        schmd2 = sch2['mode']['name']['en-US']
+        schmd3 = sch3['mode']['name']['en-US']
+        sone1 = sch1['stages'][0]['name']['en-US']
+        sone2 = sch1['stages'][1]['name']['en-US']
+        stwo1 = sch2['stages'][0]['name']['en-US']
+        stwo2 = sch2['stages'][1]['name']['en-US']
+        sthr1 = sch3['stages'][0]['name']['en-US']
+        sthr2 = sch3['stages'][1]['name']['en-US']
+        desc = "**Current Rotation** \n*__{0}:__* {1} and {2} \n".format(schmd1, sone1, sone2) + "**Next Rotation** \n*__{0}:__* {1} and {2} \n".format(schmd2, stwo1, stwo2) + "** Next Next Rotation** \n*__{0}:__* {1} and {2} \n".format(schmd3, sthr1, sthr2)
+        sched_embed = discord.Embed(title='Map Schedule for {} in Splatoon 2'.format(md), description=desc, color=0xFF8C00)
+        await ctx.trigger_typing()
+        await asyncio.sleep(1)
+        await ctx.send(embed=sched_embed)
 
     @commands.command(aliases=['maps'])
     async def schedule(self, ctx, *, type: mode_key = None):
@@ -79,8 +107,7 @@ class Splatoon:
             num = 0
             await self.alltypes_map_schedule(ctx, num)
         else:
-            await ctx.send("this isn't ready yet...")
-            #await self.modetype_splatoon2_schedule(ctx, type)
+            await self.modetype_splatoon2_schedule(ctx, type)
 
     @commands.command()
     async def nextmaps(self, ctx):
