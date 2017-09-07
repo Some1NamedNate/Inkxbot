@@ -1,6 +1,3 @@
-# This Code is where I try to match the discord.py rewrite, it's not ready yet.
-# 
-
 from discord.ext import commands
 import discord
 import datetime
@@ -21,10 +18,11 @@ description = 'My command list is right here, each is used with a comma' # or a 
 
 # this specifies what extensions to load when the bot starts up
 startup_extensions = ["cogs.JustdanceCog",
-#                      "cogs.SplatoonCog",
+                      "cogs.SplatoonCog",
                       "cogs.HearthstoneCog",
                       "cogs.DestinyCog",
                       "cogs.admin",
+                      "cogs.BackgroundtaskCog",
                       "cogs.modcog",
                       "cogs.MiscCog",
                       "cogs.dbots",
@@ -45,11 +43,12 @@ log.addHandler(handler)
 
 help_attrs = dict(hidden=True)
 
+bot_formatter = commands.HelpFormatter(show_check_failure=True)
 
 # this line below is for future purposes, it's not gonna be used yet
 #prefix = [',', '.']
 
-bot = commands.Bot(command_prefix=',', description=description, pm_help=True, help_attrs=help_attrs)
+bot = commands.Bot(command_prefix=',', description=description, pm_help=True, help_attrs=help_attrs, formatter=bot_formatter)
 
 
 def load_messages():
@@ -64,8 +63,10 @@ async def on_member_join(member):
     if guildstr not in messages: return
     if 'welcome' not in messages[guildstr]: return
     srv = messages[guildstr]
+    chanid = srv['channel']
+    channel = bot.get_channel(chanid)
     wlc = messages[guildstr]['welcome'].format(member)
-    await guild.default_channel.send(wlc)
+    await channel.send(wlc)
 
 @bot.event
 async def on_ready():
@@ -74,25 +75,7 @@ async def on_ready():
     print('--------------------------------')
     if not hasattr(bot, 'uptime'):
         bot.uptime = datetime.datetime.utcnow()
-    bot.task = bot.loop.create_task(background_task())
 
-
-async def background_task():
-    # this background task is for changing the playing status
-    await bot.wait_until_ready()
-    while not bot.is_closed():
-        await bot.change_presence(game=discord.Game(name='https://inkxbot.wordpress.com'))
-        await asyncio.sleep(30)
-        await bot.change_presence(game=discord.Game(name='https://inkxthesquid.github.io'))
-        await asyncio.sleep(30)
-        await bot.change_presence(game=discord.Game(name=',help | {} servers'.format(len(bot.guilds))))
-        await asyncio.sleep(30)
-        await bot.change_presence(game=discord.Game(name=',help for info'))
-        await asyncio.sleep(30)
-        await bot.change_presence(game=discord.Game(name='PSnews: BREAKING NEWS!'))
-        await asyncio.sleep(3)
-        await bot.change_presence(game=discord.Game(name='PSnews: Inkxbot has been rewritten!'))
-        await asyncio.sleep(6)
 
 @bot.event
 async def on_member_ban(guild, user):
@@ -114,7 +97,7 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.NoPrivateMessage):
         await discord.User.trigger_typing(author)
         await asyncio.sleep(1)
-        await author.send("Um... this command can't be used in private messages.")
+        await author.send("Um... this command can't be used in dms.")
     elif isinstance(error, commands.DisabledCommand):
         channel = ctx.message.channel
         await channel.trigger_typing()
@@ -125,6 +108,16 @@ async def on_command_error(ctx, error):
         print('In {0.command.qualified_name}:'.format(ctx), file=sys.stderr)
         traceback.print_tb(error.original.__traceback__)
         print('{0.__class__.__name__}: {0}'.format(error.original), file=sys.stderr)
+        e = discord.Embed(title='Inkx! I have encountered an Error!', color=0xcc6600)
+        e.add_field(name='Invoke', value=error)
+        e.description = '```py\nIn {0.command.qualified_name}:\n```'.format(ctx) + '{0.__class__.__name__}: {0}'.format(error.original)
+        e.timestamp = datetime.datetime.utcnow()
+        ch = bot.get_channel(348268312427364374)
+        try:
+            await ch.send(embed=e)
+        except:
+            pass
+
     elif isinstance(error, commands.CommandNotFound):
         log.info("'{0.message.author}' from \"{0.message.guild}\" used a command thats not in Inkxbot, content is resent here: '{0.message.content}'".format(ctx))
     elif isinstance(error, commands.MissingRequiredArgument):
@@ -133,6 +126,19 @@ async def on_command_error(ctx, error):
         await channel.trigger_typing()
         await asyncio.sleep(1)
         await channel.send("It seems you are missing required argument(s). Try again if you have all the arguments needed.")
+
+@bot.event
+async def on_error(event, *args, **kwargs):
+    e = discord.Embed(title='Inkx! I have encountered an Error!', color=0xcc6600)
+    e.add_field(name='Event', value=event)
+    e.description = f'```py\n{traceback.format_exc()}\n```'
+    e.timestamp = datetime.datetime.utcnow()
+    ch = bot.get_channel(348268312427364374)
+    try:
+        log.info(event)
+        await ch.send(embed=e)
+    except:
+        pass
 
 @bot.event
 async def on_resumed():
@@ -154,7 +160,6 @@ async def shutdown(ctx):
     await ctx.trigger_typing()
     await asyncio.sleep(1)
     await ctx.send("shutting down...")
-    bot.task.cancel()
     await bot.change_presence(game=None, status=discord.Status.invisible)
     await asyncio.sleep(1)
     await bot.close()
