@@ -119,13 +119,12 @@ async def on_command_error(ctx, error):
             pass
 
     elif isinstance(error, commands.CommandNotFound):
-        log.info("'{0.message.author}' from \"{0.message.guild}\" used a command thats not in Inkxbot, content is resent here: '{0.message.content}'".format(ctx))
+        log.info("'{0.message.author}': \"{0.message.guild}\" used a command thats not in Inkxbot, content is resent here: '{0.message.content}'".format(ctx))
     elif isinstance(error, commands.MissingRequiredArgument):
-        log.info("'{0.message.author}' was missing some arguments in a command, message is resent here: '{0.message.content}'".format(ctx))
         channel = ctx.message.channel
         await channel.trigger_typing()
         await asyncio.sleep(1)
-        await channel.send("It seems you are missing required argument(s). Try again if you have all the arguments needed.")
+        await channel.send(f"You've asked me about my `{ctx.command}` command without arguments, use `,help {ctx.command}`")
 
 @bot.event
 async def on_error(event, *args, **kwargs):
