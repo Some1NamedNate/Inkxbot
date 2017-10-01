@@ -1,9 +1,6 @@
 from discord.ext import commands
-from .utils import config, checks#, hcards
-import asyncio, aiohttp
+import aiohttp
 from urllib.parse import quote as urlquote
-from collections import namedtuple
-import requests
 
 class Hearthstone:
     def __init__(self, bot):

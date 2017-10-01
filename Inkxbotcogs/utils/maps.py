@@ -2,14 +2,17 @@
 
 # With credit to DanielKO and Danny
 
+import datetime
+import re
+
 from lxml import etree
-import datetime, re
-import asyncio, aiohttp
+import aiohttp
 
 NINTENDO_LOGIN_PAGE = "https://id.nintendo.net/oauth/authorize"
 SPLATNET_CALLBACK_URL = "https://splatoon.nintendo.net/users/auth/nintendo/callback"
 SPLATNET_CLIENT_ID = "12af3d0a3a1f441eb900411bb50a835a"
 SPLATNET_SCHEDULE_URL = "https://splatoon.nintendo.net/schedule"
+
 
 class Rotation(object):
     def __init__(self):

@@ -1,14 +1,11 @@
-from discord.ext import commands
 from collections import Counter
-
-from .utils import checks
-
+import datetime
 import asyncio
 import logging
+
+from discord.ext import commands
 import discord
-import datetime
 import psutil
-import os
 
 log = logging.getLogger()
 

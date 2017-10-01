@@ -1,12 +1,6 @@
-from discord.ext import commands
-from .utils import checks, formats
-import discord
-from collections import OrderedDict, deque, Counter
-import os, datetime
-import re, asyncio
-import copy
 import unicodedata
-import inspect
+
+from discord.ext import commands
 
 
 class Meta:

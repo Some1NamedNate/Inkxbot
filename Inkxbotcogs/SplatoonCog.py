@@ -1,20 +1,17 @@
-from discord.ext import commands
-
-import datetime
-import random
-import urllib
 import asyncio
-import discord
 import logging
-import aiohttp
-import yarl
+import urllib
 import json
-import re
 
+from discord.ext import commands
+import discord
+
+log = logging.getLogger()
 
 def load_schedule():
     with urllib.request.urlopen("https://splatoon.ink/schedule2.json") as url:
         return json.loads(url.read().decode())
+
 
 def mode_key(argument):
     lower = argument.lower().strip('"')
@@ -26,6 +23,7 @@ def mode_key(argument):
         return 'League Battle'
     else:
         raise commands.BadArgument('Unknown schedule type, try: "ranked", "regular", or "league"')
+
 
 class Splatoon:
     """Splatoon 2 related commands."""

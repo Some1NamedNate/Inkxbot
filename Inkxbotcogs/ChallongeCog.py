@@ -1,11 +1,11 @@
-
-from selenium import webdriver
-from discord.ext import commands
-from .utils import checks
 import asyncio
-import discord
-import challonge
 import json
+
+from discord.ext import commands
+from selenium import webdriver
+import challonge
+import discord
+
 
 def load_challonge_urls():
     with open('challongeurls.json') as c:

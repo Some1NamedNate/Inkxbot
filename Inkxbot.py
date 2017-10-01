@@ -1,16 +1,15 @@
+from collections import Counter
+import traceback
+import datetime
+import logging
+import asyncio
+import copy
+import json
+import sys
+import os
+
 from discord.ext import commands
 import discord
-import datetime
-import re
-import json, asyncio
-import aiohttp
-import copy
-import logging
-import traceback
-import sys
-import subprocess
-from cogs.utils import checks
-from collections import Counter
 
 
 description = 'My command list is right here, each is used with a comma' # or a period' (in the future)

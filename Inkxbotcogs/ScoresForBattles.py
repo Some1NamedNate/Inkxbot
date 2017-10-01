@@ -1,19 +1,22 @@
-from discord.ext import commands
-from .utils import checks
-import discord
 import asyncio
-import json
 import logging
+import json
+
+from discord.ext import commands
+import discord
 
 log = logging.getLogger()
+
 
 def load_teams():
     with open('teams.json') as l:
         return json.load(l)
 
+
 def load_trnynames():
     with open('tournamentnames.json') as t:
         return json.load(t)
+
 
 class Scoring:
     """Commands that display scores from e-sport battles against teams."""
