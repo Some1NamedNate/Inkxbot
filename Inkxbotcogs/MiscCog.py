@@ -1,7 +1,9 @@
-from selenium import webdriver
-from discord.ext import commands
 import asyncio
+
+from discord.ext import commands
+from selenium import webdriver
 import discord
+
 
 class Misc:
     """ Miscellaneous commands. """

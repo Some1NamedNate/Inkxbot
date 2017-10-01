@@ -1,9 +1,8 @@
-from discord.ext import commands
-from .utils import config, checks#, hcards
-import asyncio, aiohttp
 from urllib.parse import quote as urlquote
-from collections import namedtuple
-import requests
+
+from discord.ext import commands
+import aiohttp
+
 
 class Destiny:
     def __init__(self, bot):

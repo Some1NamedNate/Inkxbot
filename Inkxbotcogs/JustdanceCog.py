@@ -1,9 +1,9 @@
-from discord.ext import commands
-from .utils import config, checks
-import asyncio, aiohttp
 from urllib.parse import quote as urlquote
-from collections import namedtuple
-import requests
+import asyncio
+
+from discord.ext import commands
+import aiohttp
+
 
 class Just_Dance:
     def __init__(self, bot):

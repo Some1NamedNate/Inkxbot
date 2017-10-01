@@ -1,8 +1,10 @@
-from discord.ext import commands
 import asyncio
-import discord
 import random
 import os
+
+from discord.ext import commands
+import discord
+
 
 class Easter_Eggs:
     """these commands are just for fun, they all might be removed someday"""

@@ -1,15 +1,16 @@
-from discord.ext import commands
-import asyncio
-import traceback
-import discord
-import inspect
-import textwrap
 from contextlib import redirect_stdout
+import traceback
+import textwrap
+import asyncio
 import io
+
+from discord.ext import commands
+import discord
 
 # to expose to the eval command
 import datetime
 from collections import Counter
+
 
 class Admin:
     """Admin-only commands that make the bot dynamic."""

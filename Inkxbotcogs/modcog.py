@@ -1,11 +1,14 @@
-from discord.ext import commands
-from .utils import config, checks
 import asyncio
+import json
+
+from discord.ext import commands
 import discord
+
 
 def load_messages():
     with open('servermessage.json') as m:
         return json.load(m)
+
 
 class Moderation:
     """ Moderative Commands to keep the server clean """
@@ -13,15 +16,12 @@ class Moderation:
     def __init__(self, bot):
         self.bot = bot
 
-
-
     def _role_from_string(self, server, rolename, roles=None):
         if roles is None:
             roles = server.roles
         role = discord.utils.find(lambda r: r.name.lower() == rolename.lower(),roles)
 
         return role
-
 
     @commands.command(name = 'clear', invoke_without_command=True)
     @commands.guild_only()
@@ -78,7 +78,7 @@ class Moderation:
         if user is None:
             user = ctx.message.author
 
-        role = self._role_from_string(server, rolename)
+        role = self._role_from_string(ctx.guild, rolename)
 
         if role is None:
             await ctx.trigger_typing()
@@ -86,7 +86,7 @@ class Moderation:
             await ctx.send('That role cannot be found.')
             return
 
-        if not channel.permissions_for(server.me).manage_roles:
+        if not ctx.channel.permissions_for(ctx.guild.me).manage_roles:
             await ctx.trigger_typing()
             await asyncio.sleep(1)
             await ctx.send("I don't have permissions to manage roles!")
@@ -104,7 +104,7 @@ class Moderation:
         """Removes a role from user, defaults to author
         Role name must be in quotes if there are spaces.
         You must have permissions to manage roles in order to use this"""
-        role = self._role_from_string(server, rolename)
+        role = self._role_from_string(ctx.guild, rolename)
         if role is None:
             await ctx.trigger_typing()
             await asyncio.sleep(1)
@@ -112,7 +112,7 @@ class Moderation:
             return
 
         if user is None:
-            user = author
+            user = ctx.author
 
         if role in user.roles:
             try:

@@ -1,8 +1,7 @@
-import aiohttp
-import json
 import logging
-import discord
+import json
 
+import aiohttp
 
 log = logging.getLogger()
 
