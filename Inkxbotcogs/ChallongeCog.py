@@ -1,3 +1,4 @@
+
 from selenium import webdriver
 from discord.ext import commands
 from .utils import checks
@@ -52,14 +53,15 @@ class Challonge:
         driver = webdriver.PhantomJS()
         driver.maximize_window()
         driver.get(img)
+        await ctx.trigger_typing()
         driver.save_screenshot('bracket.png')
         await ctx.send(file=discord.File('bracket.png'))
 
     @commands.command(aliases=['setid'])
-    @checks.TO_or_permissions()
+    @commands.has_permissions(manage_channels=True)
     async def seturl(self, ctx, args):
         """this writes your challonge url to my database.
-        ask in Inkxbot's server for help"""
+        You must have permissions to manage channels  in order to use this"""
         guild = ctx.message.guild
         urls = load_challonge_urls()
         d = urls
@@ -69,7 +71,7 @@ class Challonge:
         with open('challongeurls.json', 'w') as fp:
             json.dump(d, fp, indent=2)
         await asyncio.sleep(1)
-        await ctx.send("I have successfully written your current challonge url to my database")
+        await ctx.send("I have successfully written your current challonge url to my database. If it didn't work with `,bracket`, make sure it follows these guidelines: https://inkxbot.github.io/guides/seturl_guide")
 
 def setup(bot):
     bot.add_cog(Challonge(bot))

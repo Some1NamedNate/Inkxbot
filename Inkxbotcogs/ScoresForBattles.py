@@ -3,6 +3,9 @@ from .utils import checks
 import discord
 import asyncio
 import json
+import logging
+
+log = logging.getLogger()
 
 def load_teams():
     with open('teams.json') as l:
@@ -20,9 +23,9 @@ class Scoring:
 
     @commands.command(aliases=['p'], pass_context=True, hidden=False)
     @commands.guild_only()
-    @checks.mod_or_permissions()
     async def post(self, ctx, battle, homescr, args, awayscr):
-        """posts a scrim score. You will need a 'Bot Commander' role in order to use this EXAMPLE: ,post 'Tournament or Scrim' 2 'name of clan you scrimed against' 1"""
+        """posts a battle result.
+         EXAMPLE: ,post 'scrim or result' 2 'name of clan you scrimed against' 1"""
         teams = load_teams()
         trnys = load_trnynames()
         guild = ctx.message.guild
@@ -39,8 +42,16 @@ class Scoring:
                 await ctx.send("done")
                 return
 
+            elif battle == 'result':
+                channel = discord.utils.get(guild.channels, name='results')
+                await channel.send("**Scrim** \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr))
+                await ctx.trigger_typing()
+                await asyncio.sleep(1)
+                await ctx.send("done")
+                return
+
             elif battle == battle:
-                channel = discord.utils.get(guild.channels, name='tournament-scores')
+                channel = discord.utils.get(guild.channels, name='results')
                 await channel.send("**Tournament**: {4} \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr, trnyname))
                 await ctx.trigger_typing()
                 await asyncio.sleep(1)
@@ -60,12 +71,14 @@ class Scoring:
                 return
         except Exception as e:
             await ctx.send("A {} has occured, plese screenshot this and send this to `InkxtheSquid#8052` on Discord".format(type(e)))
-            print(e)
+            log.info(e)
 
     @commands.command(aliases=['wt'], pass_context=True, hidden=False)
     @commands.guild_only()
+    @commands.has_permissions(manage_channels=True)
     async def writeteam(self, ctx, args):
-        """I will write the name of your clan to my database \n You will need a 'Bot Commander' role in order to use this"""
+        """I will write the name of your clan to my database
+        you must have the permissions to manage channels in order to use this"""
         guild = ctx.message.guild
         teams = load_teams()
         d = teams
@@ -76,6 +89,18 @@ class Scoring:
             json.dump(d, fp, indent=2)
         await asyncio.sleep(1)
         await ctx.send("I have successfully written your team's name into my database")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.is_owner()
+    async def newtrny(self, ctx, tn, args):
+        trnys = load_trnynames()
+        d = trnys
+        d[tn] = {}
+        d[tn]['tourny'] = args
+        with open('tournamentnames.json', 'w') as fp:
+            json.dump(d, fp, indent=2)
+        await asyncio.sleep(1)
+        await ctx.send("<:radithumbsup:317056486297829386>")
 
 def setup(bot):
     bot.add_cog(Scoring(bot))

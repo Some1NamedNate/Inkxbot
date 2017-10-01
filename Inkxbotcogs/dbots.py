@@ -26,7 +26,7 @@ class Discordlist:
             'servercount': len(self.bot.guilds)
         }
 
-        async with self.ses sion.post(CARBONAPIBOTDATA, data=carbon_payload) as resp:
+        async with self.session.post(CARBONAPIBOTDATA, data=carbon_payload) as resp:
             log.info('Carbon statistics returned {0.status} for {1}'.format(resp, carbon_payload))
 
         payload = json.dumps({
@@ -57,7 +57,6 @@ class Discordlist:
             log.info('DiscordList statistics returned {0.status} for {1}'.format(resp, dlpayload))
 
     async def on_guild_join(self, guild):
-        await guild.send("Thank you for adding me to your server! I'll be a plessure to help with many things for you! type `,help` for information on my commands!")
         await self.update()
 
     async def on_guild_remove(self, guild):

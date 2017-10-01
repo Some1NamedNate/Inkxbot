@@ -23,29 +23,46 @@ class Moderation:
         return role
 
 
-    @commands.command(name = 'clear')
+    @commands.command(name = 'clear', invoke_without_command=True)
     @commands.guild_only()
-    @checks.mod_or_permissions(move_members=True)
-    async def _clear(self, amount : int = 100):
+    @commands.has_permissions(manage_messages=True)
+    async def _clear(self, ctx, amount : int = 100):
         """Deletes my messages.
-        You will need a 'Bot Commander' role in order to use this"""
+        You must have permissions to manage messages in order to use this"""
 
+        channel = ctx.message.channel
         calls = 0;
         async for msg in channel.history(limit=amount, before=ctx.message):
             if calls and calls % 5 == 0:
                 await asyncio.sleep(1.5)
 
             if msg.author == self.bot.user:
-                await ctx.delete(msg)
+                await msg.delete()
                 calls += 1
         await ctx.send('Deleted {0}'.format(calls), delete_after=3.0)
 
+    @commands.command(name = 'clean', invoke_without_command=True, hidden=True)
+    @commands.guild_only()
+    @commands.is_owner()
+    async def clean(self, ctx, amount : int = 100):
+        channel = ctx.message.channel
+        calls = 0;
+        async for msg in channel.history(limit=amount, before=ctx.message):
+            if calls and calls % 5 == 0:
+                await asyncio.sleep(1.5)
+
+            if msg.author == self.bot.user:
+                await msg.delete()
+                calls += 1
+        await ctx.send('Deleted {0}'.format(calls), delete_after=3.0)
+
+
     @commands.command(invoke_without_command=True)
     @commands.guild_only()
-    @checks.mod_or_permissions(move_members=True)
+    @commands.has_permissions(manage_messages=True)
     async def purge(self, ctx, amount : int = 5):
         """Deletes specified number of messages.
-        You must have a 'Bot Commander' role in order to use this"""
+        You must have permissions to manage messages in order to use this"""
         channel = ctx.message.channel
         message = ctx.message
         deleted = await channel.purge(limit=amount, before=message)
@@ -53,12 +70,11 @@ class Moderation:
 
     @commands.command(pass_context=True)
     @commands.guild_only()
-    @checks.mod_or_permissions(manage_roles=True)
+    @commands.has_permissions(manage_roles=True)
     async def give(self, ctx, rolename, user: discord.Member=None):
         """Gives a role to a user, defaults to author
         Role name must be in quotes if there are spaces.
-        You must have a 'Bot Commander' role in order to use this
-        You also must have permissions to manage roles"""
+        You must have permissions to manage roles in order to use this"""
         if user is None:
             user = ctx.message.author
 
@@ -83,11 +99,11 @@ class Moderation:
 
     @commands.command(pass_context=True, name = 'remove')
     @commands.guild_only()
-    @checks.mod_or_permissions(manage_roles=True)
+    @commands.has_permissions(manage_roles=True)
     async def _remove(self, ctx, rolename, user: discord.Member=None):
         """Removes a role from user, defaults to author
         Role name must be in quotes if there are spaces.
-        You will need a 'Bot Commander' role in order to use this"""
+        You must have permissions to manage roles in order to use this"""
         role = self._role_from_string(server, rolename)
         if role is None:
             await ctx.trigger_typing()

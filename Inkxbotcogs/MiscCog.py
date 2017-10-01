@@ -1,3 +1,4 @@
+from selenium import webdriver
 from discord.ext import commands
 import asyncio
 import discord
@@ -143,6 +144,19 @@ class Misc:
         await asyncio.sleep(1)
         await channel.send(args)
         await ctx.send("\U0001f44d")
+
+    @commands.command(hidden=True, pass_context=True)
+    @commands.is_owner()
+    async def screenshot(self, ctx, args):
+        """Screenshots a page"""
+        site = args
+        driver = webdriver.PhantomJS()
+        driver.maximize_window()
+        await ctx.trigger_typing()
+        driver.get(site)
+        await ctx.trigger_typing()
+        driver.save_screenshot('screenshot.png')
+        await ctx.send(file=discord.File('screenshot.png'))
 
     @commands.command(pass_context=True, hidden=True)
     @commands.is_owner()

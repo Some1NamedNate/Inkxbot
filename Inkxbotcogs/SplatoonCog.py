@@ -13,7 +13,7 @@ import re
 
 
 def load_schedule():
-    with urllib.request.urlopen("https://splapi2.stat.ink/schedule") as url:
+    with urllib.request.urlopen("https://splatoon.ink/schedule2.json") as url:
         return json.loads(url.read().decode())
 
 def mode_key(argument):
@@ -40,22 +40,22 @@ class Splatoon:
     async def alltypes_map_schedule(self, ctx, number):
         splatoonjson = load_schedule()
         dict = splatoonjson
-        regular = dict['regular']
-        ranked  = dict['gachi']
-        league  = dict['league']
-        regmaps = regular[number]['stages']
+        regular = dict['modes']['regular']
+        ranked  = dict['modes']['gachi']
+        league  = dict['modes']['league']
+        regmaps = regular[number]['maps']
         rnk = ranked[number]
         lge = league[number]
-        rnkmd = rnk['mode']['name']['en-US']
-        lgemd = lge['mode']['name']['en-US']
-        rnkmaps = rnk['stages']
-        lgemaps = lge['stages']
-        t1 = regmaps[0]['name']['en-US']
-        t2 = regmaps[1]['name']['en-US']
-        r1 = rnkmaps[0]['name']['en-US']
-        r2 = rnkmaps[1]['name']['en-US']
-        l1 = lgemaps[0]['name']['en-US']
-        l2 = lgemaps[1]['name']['en-US']
+        rnkmd = rnk['rule']['name']
+        lgemd = lge['rule']['name']
+        rnkmaps = rnk['maps']
+        lgemaps = lge['maps']
+        t1 = regmaps[0]
+        t2 = regmaps[1]
+        r1 = rnkmaps[0]
+        r2 = rnkmaps[1]
+        l1 = lgemaps[0]
+        l2 = lgemaps[1]
         if number == 0:
             titlename = 'Current maps in Splatoon 2'
         else:
@@ -81,19 +81,19 @@ class Splatoon:
         else:
             log.info('something fucked up... fix it?')
 
-        sch = dict[basebatt]
+        sch = dict['modes'][basebatt]
         sch1 = sch[0]
         sch2 = sch[1]
         sch3 = sch[2]
-        schmd1 = sch1['mode']['name']['en-US']
-        schmd2 = sch2['mode']['name']['en-US']
-        schmd3 = sch3['mode']['name']['en-US']
-        sone1 = sch1['stages'][0]['name']['en-US']
-        sone2 = sch1['stages'][1]['name']['en-US']
-        stwo1 = sch2['stages'][0]['name']['en-US']
-        stwo2 = sch2['stages'][1]['name']['en-US']
-        sthr1 = sch3['stages'][0]['name']['en-US']
-        sthr2 = sch3['stages'][1]['name']['en-US']
+        schmd1 = sch1['rule']['name']
+        schmd2 = sch2['rule']['name']
+        schmd3 = sch3['rule']['name']
+        sone1 = sch1['maps'][0]
+        sone2 = sch1['maps'][1]
+        stwo1 = sch2['maps'][0]
+        stwo2 = sch2['maps'][1]
+        sthr1 = sch3['maps'][0]
+        sthr2 = sch3['maps'][1]
         desc = "**Current Rotation** \n*__{0}:__* {1} and {2} \n".format(schmd1, sone1, sone2) + "**Next Rotation** \n*__{0}:__* {1} and {2} \n".format(schmd2, stwo1, stwo2) + "** Next Next Rotation** \n*__{0}:__* {1} and {2} \n".format(schmd3, sthr1, sthr2)
         sched_embed = discord.Embed(title='Map Schedule for {} in Splatoon 2'.format(md), description=desc, color=0xFF8C00)
         await ctx.trigger_typing()

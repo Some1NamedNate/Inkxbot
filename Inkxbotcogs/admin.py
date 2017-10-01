@@ -1,7 +1,11 @@
 from discord.ext import commands
-from .utils import checksre
+import asyncio
+import traceback
 import discord
 import inspect
+import textwrap
+from contextlib import redirect_stdout
+import io
 
 # to expose to the eval command
 import datetime
@@ -12,6 +16,26 @@ class Admin:
 
     def __init__(self, bot):
         self.bot = bot
+        self._last_result = None
+        self.sessions = set()
+
+    def cleanup_code(self, content):
+        """Automatically removes code blocks from the code."""
+        # remove ```py\n```
+        if content.startswith('```') and content.endswith('```'):
+            return '\n'.join(content.split('\n')[1:-1])
+
+        # remove `foo`
+        return content.strip('` \n')
+
+    async def __local_check(self, ctx):
+        return await self.bot.is_owner(ctx.author)
+
+    def get_syntax_error(self, e):
+        if e.text is None:
+            return f'```py\n{e.__class__.__name__}: {e}\n```'
+        return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
+
 
     @commands.command(hidden=True, pass_context=True)
     @commands.is_owner()
@@ -53,50 +77,53 @@ class Admin:
         else:
             await ctx.send('<:radithumbsup:317056486297829386>')
 
-    @commands.command(name = 'clean')
-    @commands.is_owner()
-    async def clean(self, amount : int = 100):
-        """Deletes my messages.
-        You will need a 'Bot Commander' role in order to use this"""
 
-        calls = 0;
-        async for msg in channel.history(limit=amount, before=ctx.message):
-            if calls and calls % 5 == 0:
-                await asyncio.sleep(1.5)
-
-            if msg.author == self.bot.user:
-                await ctx.delete(msg)
-                calls += 1
-        await ctx.send('Deleted {0}'.format(calls), delete_after=3.0)
-
-    @commands.command(hidden=True)
-    @commands.is_owner()
-    async def debug(self, ctx, *, code : str):
-        """Evaluates code."""
-        code = code.strip('` ')
-        python = '```py\n{}\n```'
-        result = None
+    @commands.command(pass_context=True, hidden=True, name='eval')
+    async def _eval(self, ctx, *, body: str):
+        """Evaluates a code"""
 
         env = {
-            'inkxbot': self.bot,
+            'bot': self.bot,
             'ctx': ctx,
+            'channel': ctx.channel,
+            'author': ctx.author,
+            'guild': ctx.guild,
             'message': ctx.message,
-            'guild': ctx.message.guild,
-            'channel': ctx.message.channel,
-            'author': ctx.message.author
+            '_': self._last_result
         }
 
         env.update(globals())
 
-        try:
-            result = eval(code, env)
-            if inspect.isawaitable(result):
-                result = await result
-        except Exception as e:
-            await ctx.send('<:radithink:316999358333714432>' + python.format(type(e).__name__ + ': ' + str(e)))
-            return
+        body = self.cleanup_code(body)
+        stdout = io.StringIO()
 
-        await ctx.send('<:radithink:316999358333714432>' + python.format(result))
+        to_compile = f'async def func():\n{textwrap.indent(body, "  ")}'
+
+        try:
+            exec(to_compile, env)
+        except Exception as e:
+            return await ctx.send(f'```py\n{e.__class__.__name__}: {e}\n```')
+
+        func = env['func']
+        try:
+            with redirect_stdout(stdout):
+                ret = await func()
+        except Exception as e:
+            value = stdout.getvalue()
+            await ctx.send('<:radithink:316999358333714432> \n' + f'```py\n{value}{traceback.format_exc()}\n```')
+        else:
+            value = stdout.getvalue()
+            try:
+                await ctx.message.add_reaction('<:radithumbsup:317056486297829386>')
+            except:
+                pass
+
+            if ret is None:
+                if value:
+                    await ctx.send(f'```py\n{value}\n```')
+            else:
+                self._last_result = ret
+                await ctx.send(f'```py\n{value}{ret}\n```')
 
 
 def setup(bot):
