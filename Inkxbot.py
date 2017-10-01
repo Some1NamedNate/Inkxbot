@@ -43,12 +43,12 @@ log.addHandler(handler)
 
 help_attrs = dict(hidden=True)
 
-bot_formatter = commands.HelpFormatter(show_check_failure=True)
+botfmt = commands.HelpFormatter(show_check_failure=True)
 
 # this line below is for future purposes, it's not gonna be used yet
 #prefix = [',', '.']
 
-bot = commands.Bot(command_prefix=',', description=description, pm_help=True, help_attrs=help_attrs, formatter=bot_formatter)
+bot = commands.Bot(command_prefix=',', description=description, pm_help=True, help_attrs=help_attrs, formatter=botfmt)
 
 
 def load_messages():
@@ -98,6 +98,11 @@ async def on_command_error(ctx, error):
         await discord.User.trigger_typing(author)
         await asyncio.sleep(1)
         await author.send("Um... this command can't be used in dms.")
+    elif isinstance(error, discord.errors.Forbidden):
+        channel = ctx.message.channel
+        await channel.trigger_typing()
+        await asyncio.sleep(1)
+        await channel.send("I think you disabled dms from me...can you let me dm you for a sec?")
     elif isinstance(error, commands.DisabledCommand):
         channel = ctx.message.channel
         await channel.trigger_typing()
@@ -119,7 +124,7 @@ async def on_command_error(ctx, error):
             pass
 
     elif isinstance(error, commands.CommandNotFound):
-        log.info("'{0.message.author}': \"{0.message.guild}\" used a command thats not in Inkxbot, content is resent here: '{0.message.content}'".format(ctx))
+        log.info(f"\"{ctx.message.guild}\": \"{ctx.message.author}\" used a command thats not in Inkxbot, content is resent here: '{ctx.message.content}'")
     elif isinstance(error, commands.MissingRequiredArgument):
         channel = ctx.message.channel
         await channel.trigger_typing()
