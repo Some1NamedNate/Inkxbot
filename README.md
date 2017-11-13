@@ -10,6 +10,5 @@ Also, the rewrite branch is for a little bit of teaching of the discord.py libra
 
 - Python 3.5+
 - discord.py rewrite
-- lxml
 - pyChallonge
 - Selenium WebDriver
