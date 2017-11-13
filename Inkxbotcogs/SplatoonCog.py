@@ -1,16 +1,13 @@
 import asyncio
+import aiohttp
+
 import logging
-import urllib
 import json
 
 from discord.ext import commands
 import discord
 
 log = logging.getLogger()
-
-def load_schedule():
-    with urllib.request.urlopen("https://splatoon.ink/schedule2.json") as url:
-        return json.loads(url.read().decode())
 
 
 def mode_key(argument):
@@ -35,8 +32,12 @@ class Splatoon:
         if isinstance(error, commands.BadArgument):
             return await ctx.send(error)
 
+    async def load_schedule(self):
+        async with self.bot.aio_session.get("https://splatoon.ink/schedule2.json") as url:
+            return await url.json()
+
     async def alltypes_map_schedule(self, ctx, number):
-        splatoonjson = load_schedule()
+        splatoonjson = await self.load_schedule()
         dict = splatoonjson
         regular = dict['modes']['regular']
         ranked  = dict['modes']['gachi']
@@ -65,7 +66,7 @@ class Splatoon:
         await ctx.send(embed=sched_embed)
 
     async def modetype_splatoon2_schedule(self, ctx, mode):
-        splatoonjson = load_schedule()
+        splatoonjson = await self.load_schedule()
         dict = splatoonjson
         if mode == 'Ranked Battle':
             md = 'Ranked'
