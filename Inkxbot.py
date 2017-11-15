@@ -96,11 +96,11 @@ async def on_command_error(ctx, error):
     ignored = (commands.CommandNotFound, commands.UserInputError)
     error = getattr(error, 'original', error)
     if isinstance(error, ignored):
-        return 
+        return
     elif isinstance(error, commands.NoPrivateMessage):
         await discord.User.trigger_typing(author)
         await asyncio.sleep(1)
-        await author.send("Um... this command can't be used in dms.")
+        await author.send("Hey! This command can't be used in DMs.")
     elif isinstance(error, commands.DisabledCommand):
         channel = ctx.message.channel
         await channel.trigger_typing()
