@@ -78,10 +78,13 @@ async def on_ready():
 
 @bot.event
 async def on_member_ban(guild, user):
-    for channel in guild.channels:
-        if channel.name == "banlogs":
-            await channel.send("**BAN** \n**User**: {0}".format(user))
-            break
+    async for entry in guild.audit_logs(action=discord.AuditLogAction.ban):
+        print('{0.user} banned {0.target}'.format(entry))
+        for channel in guild.channels:
+            if channel.name == "banlogs":
+                await channel.send(f"**BAN** \n**User**: {user} \n**Reason**: {entry.reason} \n**Reponsible Mod: {entry.user}")
+                break
+
 @bot.event
 async def on_message(message):
     if message.author.bot:
