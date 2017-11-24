@@ -75,16 +75,6 @@ async def on_ready():
     if not hasattr(bot, 'uptime'):
         bot.uptime = datetime.datetime.utcnow()
 
-
-@bot.event
-async def on_member_ban(guild, user):
-    async for entry in guild.audit_logs(action=discord.AuditLogAction.ban):
-        print('{0.user} banned {0.target}'.format(entry))
-        for channel in guild.channels:
-            if channel.name == "banlogs":
-                await channel.send(f"**BAN** \n**User**: {user} \n**Reason**: {entry.reason} \n**Reponsible Mod: {entry.user}")
-                break
-
 @bot.event
 async def on_message(message):
     if message.author.bot:
