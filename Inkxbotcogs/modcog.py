@@ -129,6 +129,18 @@ class Moderation:
             await asyncio.sleep(1)
             await ctx.send("User does not have that role.")
 
+    async def on_member_ban(self, guild, user):
+        await asyncio.sleep(5)
+        try:
+            async for entry in guild.audit_logs(action=discord.AuditLogAction.ban):
+                channel = discord.utils.get(guild.channels, name='banlogs')
+                if entry.reason == None:
+                    return await channel.send(f"**BAN** \n**User**: {user} \n**Reponsible Mod**: {entry.user}")
+                else:
+                    return await channel.send(f"**BAN** \n**User**: {user} \n**Reason**: {entry.reason} \n**Reponsible Mod**: {entry.user}")
+        except (discord.errors.Forbidden, AttributeError):
+            pass
+
     #@commands.group(pass_context=True, no_pm=True)
     #@checks.mod_or_permissions()
     #async def welcome(self, ctx)
