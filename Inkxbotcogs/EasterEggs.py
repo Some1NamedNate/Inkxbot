@@ -7,7 +7,7 @@ import discord
 
 
 class Easter_Eggs:
-    """these commands are just for fun, they all might be removed someday"""
+    """These commands are just for fun, they all might be removed someday"""
 
     def __init__(self, bot):
         self.bot = bot
