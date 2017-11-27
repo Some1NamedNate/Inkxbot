@@ -66,5 +66,11 @@ class Easter_Eggs:
         await ctx.trigger_typing()
         await ctx.send('<:foxbot:244929610146381824><:mademe:244929610792304640><:dothis:244929610607886337>')
 
+    @commands.command(pass_context=True, hidden=True)
+    async def baguette(self, ctx):
+        """muda!"""
+        await ctx.trigger_typing()
+        await ctx.send('MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA!')
+
 def setup(bot):
     bot.add_cog(Easter_Eggs(bot))
