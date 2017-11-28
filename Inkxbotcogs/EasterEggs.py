@@ -72,5 +72,11 @@ class Easter_Eggs:
         await ctx.trigger_typing()
         await ctx.send('MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA! MUDA!')
 
+    @commands.command(pass_context=True, hidden=True)
+    async def spacecore(self, ctx):
+        """spaaaaaaaaaaaace!"""
+        await ctx.trigger_typing()
+        await ctx.send('SPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACE!!1!')
+        
 def setup(bot):
     bot.add_cog(Easter_Eggs(bot))
