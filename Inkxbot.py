@@ -155,7 +155,6 @@ async def shutdown(ctx):
     await ctx.trigger_typing()
     await asyncio.sleep(1)
     await ctx.send("shutting down...")
-    await bot.change_presence(game=None, status=discord.Status.invisible)
     await asyncio.sleep(1)
     await bot.close()
     os._exit(0)
