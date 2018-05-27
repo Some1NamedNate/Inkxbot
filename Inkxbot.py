@@ -7,6 +7,7 @@ import copy
 import json
 import sys
 import os
+import aiohttp
 
 from discord.ext import commands
 import discord
@@ -29,7 +30,9 @@ startup_extensions = ["cogs.JustdanceCog",
                       "cogs.MetaCog",
                       "cogs.ChallongeCog",
                       "cogs.EasterEggs",
-                      "cogs.StatsCog"
+                      "cogs.StatsCog",
+                      "cogs.customhelp",
+                      "cogs.buttons"
                       ]
 
 
@@ -40,14 +43,11 @@ log.setLevel(logging.INFO)
 handler = logging.FileHandler(filename='inkxbot.log', encoding='utf-8', mode='w')
 log.addHandler(handler)
 
-help_attrs = dict(hidden=True)
+helpattrs = dict(hidden=True)
 
 botfmt = commands.HelpFormatter(show_check_failure=True)
 
-# this line below is for future purposes, it's not gonna be used yet
-#prefix = [',', '.']
-
-bot = commands.Bot(command_prefix=',', description=description, pm_help=True, help_attrs=help_attrs, formatter=botfmt)
+bot = commands.Bot(command_prefix=',', help_attrs=helpattrs, description=description, formatter=botfmt)
 
 
 def load_messages():
@@ -75,6 +75,20 @@ async def on_ready():
     if not hasattr(bot, 'uptime'):
         bot.uptime = datetime.datetime.utcnow()
 
+
+#@bot.event
+#async def on_member_ban(guild, user):
+    #await asyncio.sleep(5)
+    #async for entry in guild.audit_logs(action=discord.AuditLogAction.ban):
+        #channel = discord.utils.get(guild.channels, name='banlogs')
+        #try:
+            #if entry.reason == None:
+                #return await channel.send(f"**BAN** \n**User**: {user} \n**Reponsible Mod**: {entry.user}")
+            #else:
+                #return await channel.send(f"**BAN** \n**User**: {user} \n**Reason**: {entry.reason} \n**Reponsible Mod**: {entry.user}")
+        #except:
+            #pass
+
 @bot.event
 async def on_message(message):
     if message.author.bot:
@@ -82,15 +96,13 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
+help_ = bot.command('help')
+
 @bot.event
 async def on_command_error(ctx, error):
     channel = ctx.message.channel
     author  = ctx.message.author
-    ignored = (commands.CommandNotFound, commands.UserInputError)
-    error = getattr(error, 'original', error)
-    if isinstance(error, ignored):
-        return
-    elif isinstance(error, commands.NoPrivateMessage):
+    if isinstance(error, commands.NoPrivateMessage):
         await discord.User.trigger_typing(author)
         await asyncio.sleep(1)
         await author.send("Hey! This command can't be used in DMs.")
@@ -155,6 +167,7 @@ async def shutdown(ctx):
     await ctx.trigger_typing()
     await asyncio.sleep(1)
     await ctx.send("shutting down...")
+    await bot.change_presence(game=None, status=discord.Status.invisible)
     await asyncio.sleep(1)
     await bot.close()
     os._exit(0)
@@ -164,10 +177,10 @@ def load_credentials():
     with open('credentials.json') as f:
         return json.load(f)
 
-
 if __name__ == '__main__':
     credentials = load_credentials()
     token = credentials['token']
+    bot.aio_session = aiohttp.ClientSession(loop=bot.loop)
     bot.client_id = credentials['client_id']
     bot.carbon_key = credentials['carbon_key']
     bot.discordlist_token = credentials['discordlist_token']

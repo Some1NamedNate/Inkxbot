@@ -38,7 +38,7 @@ class Scoring:
         trnyname = trnys[battle]['tourny']
         try:
             if battle == 'scrim':
-                channel = discord.utils.get(guild.channels, name='scrim-scores')
+                channel = discord.utils.get(guild.channels, name='results')
                 await channel.send("**Scrim** \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr))
                 await ctx.trigger_typing()
                 await asyncio.sleep(1)
@@ -46,7 +46,7 @@ class Scoring:
                 return
 
             elif battle == 'result':
-                channel = discord.utils.get(guild.channels, name='results')
+                channel = discord.utils.get(guild.channels, name='scrim-scores')
                 await channel.send("**Scrim** \n{0} {1}  -  {3} {2}".format(teamname, homescr, args, awayscr))
                 await ctx.trigger_typing()
                 await asyncio.sleep(1)

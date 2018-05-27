@@ -5,7 +5,6 @@ import aiohttp
 
 log = logging.getLogger()
 
-DISCORDLISTAPI   = 'https://bots.discordlist.net/api.php'
 CARBONAPIBOTDATA = 'https://www.carbonitex.net/discord/data/botdata.php'
 DBOTSAPI         = 'https://bots.discord.pw/api'
 
@@ -13,7 +12,7 @@ class Discordlist:
     """Cog for updating bot information on botlisting websites."""
     def __init__(self, bot):
         self.bot = bot
-        self.session = aiohttp.ClientSession()
+        self.session = self.bot.aio_session
 
     def __unload(self):
         # give me hope

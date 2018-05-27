@@ -129,6 +129,19 @@ class Moderation:
             await asyncio.sleep(1)
             await ctx.send("User does not have that role.")
 
+
+    async def on_member_remove(self, member):
+        guild = member.guild
+        messages = load_messages()
+        guildstr = str(guild.id)
+        if guildstr not in messages: return
+        if 'leave' not in messages[guildstr]: return
+        srv = messages[guildstr]
+        chanid = srv['channel']
+        channel = self.bot.get_channel(chanid)
+        wlc = messages[guildstr]['leave'].format(member)
+        await channel.send(wlc)
+
     async def on_member_ban(self, guild, user):
         await asyncio.sleep(5)
         try:
@@ -140,22 +153,6 @@ class Moderation:
                     return await channel.send(f"**BAN** \n**User**: {user} \n**Reason**: {entry.reason} \n**Reponsible Mod**: {entry.user}")
         except (discord.errors.Forbidden, AttributeError):
             pass
-
-    #@commands.group(pass_context=True, no_pm=True)
-    #@checks.mod_or_permissions()
-    #async def welcome(self, ctx)
-        #"""Shows your server's current welcome message or changes it. Bot Commander required"""
-        #server = ctx.message.server
-        #lm = load_messages()
-        #wlc = lm[server.id]['welcome'].format('user')
-        #await self.bot.say("**your server's current welcome message:** `{}`".format(wlc))
-
-    #@welcome.command(pass_context=True, no_pm=True)
-    #@checks.mod_or_permissions()
-    #async def onjoin(self, ctx, args)
-        #"""Sets the server's welcome message to when a new user joins the server"""
-        #server= ctx.message.server
-        #lm = load_messages()
 
 def setup(bot):
     bot.add_cog(Moderation(bot))

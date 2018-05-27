@@ -1,8 +1,12 @@
 import asyncio
+import aiohttp
+import io
+import image
 import json
 
 from discord.ext import commands
-from selenium import webdriver
+import cairosvg
+
 import challonge
 import discord
 
@@ -13,14 +17,14 @@ def load_challonge_urls():
 
 class Challonge:
     """ Commands that are used from Challonge. """
-
+    
     def __init__(self, bot):
         self.bot = bot
         self.taskupdater = bot.loop.create_task(self.challonge_background_task())
-
+    
     def __unload(self):
         self.taskupdater.cancel()
-
+    
     async def challonge_background_task(self):
         # this background task is for showing updates from your tournament
         await self.bot.wait_until_ready()
@@ -41,27 +45,31 @@ class Challonge:
             await asyncio.sleep(1800) #runs every 30 mins
 
     @commands.command()
+    @commands.guild_only()
     async def bracket(self, ctx):
         """Shows a Challonge tournament bracket"""
         guild = ctx.message.guild
         challongeurls = load_challonge_urls()
+        await ctx.trigger_typing()
+        await asyncio.sleep(1)
         guildstr = str(guild.id)
         site = challongeurls[guildstr]["url"]
-        tournament = challonge.tournaments.show(site)
-        await ctx.trigger_typing()
-        img = (tournament["live-image-url"])
-        driver = webdriver.PhantomJS()
-        driver.maximize_window()
-        driver.get(img)
-        await ctx.trigger_typing()
-        driver.save_screenshot('bracket.png')
-        await ctx.send(file=discord.File('bracket.png'))
+        await asyncio.sleep(1)
+        try:
+            cairosvg.svg2png(url=site, write_to='bracket.png')
+            await asyncio.sleep(1)
+            await ctx.trigger_typing()
+            await ctx.send(file=discord.File("bracket.png"))
+        except KeyError:
+            await ctx.trigger_typing()
+            await ctx.send("I don't think you've given me your chollonge bracket yet...write it to my database with `,setbracket '(challonge tournament link).svg'`")
 
-    @commands.command(aliases=['setid'])
+    @commands.command(aliases=['setb'])
+    @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
-    async def seturl(self, ctx, args):
+    async def setbracket(self, ctx, args):
         """this writes your challonge url to my database.
-        You must have permissions to manage channels  in order to use this"""
+    You must have permissions to manage channels  in order to use this"""
         guild = ctx.message.guild
         urls = load_challonge_urls()
         d = urls
@@ -70,8 +78,8 @@ class Challonge:
         await ctx.trigger_typing()
         with open('challongeurls.json', 'w') as fp:
             json.dump(d, fp, indent=2)
-        await asyncio.sleep(1)
-        await ctx.send("I have successfully written your current challonge url to my database. If it didn't work with `,bracket`, make sure it follows these guidelines: https://inkxbot.github.io/guides/seturl_guide")
+            await asyncio.sleep(1)
+            await ctx.send("I have successfully written your current challonge bracket to my database.")
 
 def setup(bot):
     bot.add_cog(Challonge(bot))

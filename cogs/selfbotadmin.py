@@ -1,16 +1,15 @@
-from contextlib import redirect_stdout
-import traceback
-import textwrap
-import asyncio
-import io
-
 from discord.ext import commands
+import asyncio
+import traceback
 import discord
+import inspect
+import textwrap
+from contextlib import redirect_stdout
+import io
 
 # to expose to the eval command
 import datetime
 from collections import Counter
-
 
 class Admin:
     """Admin-only commands that make the bot dynamic."""
@@ -37,19 +36,6 @@ class Admin:
             return f'```py\n{e.__class__.__name__}: {e}\n```'
         return f'```py\n{e.text}{"^":>{e.offset}}\n{e.__class__.__name__}: {e}```'
 
-
-    @commands.command(hidden=True, pass_context=True)
-    @commands.is_owner()
-    async def load(self, ctx, *, module : str):
-        """Loads a module."""
-        extention = "cogs." + module
-        try:
-            self.bot.load_extension(extention)
-        except Exception as e:
-            await ctx.send('\U0001f6ab')
-            await ctx.send('{}: {}'.format(type(e).__name__, e))
-        else:
-            await ctx.send('<:radithumbsup:317056486297829386>')
 
     @commands.command(hidden=True, pass_context=True)
     @commands.is_owner()

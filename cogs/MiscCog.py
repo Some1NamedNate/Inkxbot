@@ -1,7 +1,6 @@
 import asyncio
 
 from discord.ext import commands
-from selenium import webdriver
 import discord
 
 
@@ -113,7 +112,7 @@ class Misc:
         """I will give you a link so I can be added to a server"""
         await ctx.trigger_typing()
         await asyncio.sleep(1)
-        await ctx.author.send('You want to add me to a server? Ok! Add me to a server with this link: <https://discordapp.com/oauth2/authorize?client_id=245648163837444097&scope=bot&permissions=268437512>')
+        await ctx.author.send('You want to add me to a server? Ok! Add me to a server with this link: <https://inkxbot.github.io/invite>')
         if isinstance(ctx.message.channel, discord.TextChannel):
             await ctx.send("{} check your dms".format(ctx.message.author.mention))
         else:
@@ -147,18 +146,6 @@ class Misc:
         await channel.send(args)
         await ctx.send("\U0001f44d")
 
-    @commands.command(hidden=True, pass_context=True)
-    @commands.is_owner()
-    async def screenshot(self, ctx, args):
-        """Screenshots a page"""
-        site = args
-        driver = webdriver.PhantomJS()
-        driver.maximize_window()
-        await ctx.trigger_typing()
-        driver.get(site)
-        await ctx.trigger_typing()
-        driver.save_screenshot('screenshot.png')
-        await ctx.send(file=discord.File('screenshot.png'))
 
     @commands.command(pass_context=True, hidden=True)
     @commands.is_owner()

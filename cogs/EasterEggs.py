@@ -7,7 +7,7 @@ import discord
 
 
 class Easter_Eggs:
-    """These commands are just for fun, they all might be removed someday"""
+    """these commands are just for fun, they all might be removed someday"""
 
     def __init__(self, bot):
         self.bot = bot
@@ -77,6 +77,6 @@ class Easter_Eggs:
         """spaaaaaaaaaaaace!"""
         await ctx.trigger_typing()
         await ctx.send('SPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACE!!1!')
-        
+
 def setup(bot):
     bot.add_cog(Easter_Eggs(bot))

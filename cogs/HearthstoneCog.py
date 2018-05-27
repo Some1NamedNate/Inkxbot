@@ -1,6 +1,6 @@
 from discord.ext import commands
 import aiohttp
-from urllib.parse import quote as urlquote
+import asyncio
 
 class Hearthstone:
     def __init__(self, bot):
@@ -26,23 +26,26 @@ class Hearthstone:
 
 
     @commands.command(pass_context=True)
-    async def hearthwiki(self, title, ctx):
+    async def hearthwiki(self, ctx, args):
         """Returns a hearthstone wiki page: ,hearthwiki 'card name'"""
-        url = 'http://hearthstone.wikia.com/wiki/' + urlquote(title)
-        async with aiohttp.ClientSession() as cs:
-            async with cs.get(url) as resp:
-                if resp.status == 404:
-                    await ctx.trigger_typing()
-                    await ctx.send('Could not find your page. Try a search:\n<{0.url}>'.format(resp))
-                elif resp.status == 200:
-                    await ctx.trigger_typing()
-                    await ctx.send(resp.url)
-                elif resp.status == 502:
-                    await ctx.trigger_typing()
-                    await ctx.send('Seems like the Hearthstone Wiki is taking too long to respond. Try again later.')
-                else:
-                    await ctx.trigger_typing()
-                    await ctx.send('An error has occurred of status code {0.status} happened. Tell Inkx.'.format(resp))
+        url = 'http://hearthstone.wikia.com/wiki/' + args
+        async with self.bot.aio_session.get(url) as resp:
+            if resp.status == 404:
+                await ctx.trigger_typing()
+                await asyncio.sleep(1)
+                await ctx.send('Could not find your page. Try a search:\n<{0.url}>'.format(resp))
+            elif resp.status == 200:
+                await ctx.trigger_typing()
+                await asyncio.sleep(1)
+                await ctx.send(resp.url)
+            elif resp.status == 502:
+                await ctx.trigger_typing()
+                await asyncio.sleep(1)
+                await ctx.send('Seems like the Hearthstone Wiki is taking too long to respond. Try again later.')
+            else:
+                await ctx.trigger_typing()
+                await asyncio.sleep(1)
+                await ctx.send('An error has occurred of status code {0.status} happened. Tell Inkx.'.format(resp))
 
 def setup(bot):
     bot.add_cog(Hearthstone(bot))
