@@ -1,7 +1,0 @@
-"""
-I've added a new __main__.py file. It probably doesn't matter much to you guys since I only wrote it for beginner purposes.
-
-You can now do e.g. python -m discord newbot coolbot and it'll create a bot template for you. There's also python -m discord newcog cogname to create a new cog template. You can play around with it I guess using --help on the subcommands.
-
-Let me know if it's buggy.
-"""
