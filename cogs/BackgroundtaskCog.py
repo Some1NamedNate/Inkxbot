@@ -24,12 +24,6 @@ class Backgndtsk:
             await asyncio.sleep(60)
             await self.bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=',help for info'))
             await asyncio.sleep(60)
-            await self.bot.change_presence(activity=discord.Game(name='PSnews: IMPORTANT!'))
-            await asyncio.sleep(3)
-            await self.bot.change_presence(activity=discord.Game(name='PSnews: Inkxbot is at risk of being cut off by comcast!'))
-            await asyncio.sleep(3)
-            await self.bot.change_presence(activity=discord.Game(name='PSnews: please help via Patreon! https://www.patreon.com/inkxthesquid'))
-            await asyncio.sleep(3)
 
 def setup(bot):
     bot.add_cog(Backgndtsk(bot))
