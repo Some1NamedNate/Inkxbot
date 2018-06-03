@@ -20,6 +20,14 @@ def mode_key(argument):
         return 'League Battle'
     elif lower == 'season':
     	return 'X rank'
+    elif lower == 'zones':
+        return 'Zones'
+    elif lower == 'tower':
+        return 'Tower'
+    elif lower == 'rainmaker':
+        return 'Rainmaker'
+    elif lower == 'clam'
+        return 'Clam'
     else:
         raise commands.BadArgument('Unknown schedule type, try: "ranked", "season", "regular", or "league"')
 
@@ -100,6 +108,10 @@ class Splatoon:
         await ctx.send(embed=sched_embed)
 
     async def modetype_splatoon2_schedule(self, ctx, mode):
+        ZONES_MAPS     = 'image link for the current maps for zones here'
+        TOWER_MAPS     = 'image link for the current maps for tower here'
+        RAINMAKER_MAPS = 'image link for the current maps for rainmaker here'
+        CLAM_MAPS      = 'image link for the current maps for clam'
         splatoonjson = await self.load_schedule()
         dict = splatoonjson
         if mode == 'Ranked Battle':
@@ -118,6 +130,22 @@ class Splatoon:
         	md = 'Xrank'
         	basebatt = 'gachi'
         	co = 0xFF6F00
+        elif mode == 'Zones':
+            md = 'Splat Zones'
+            basebatt = 'gachi'
+            co = 0xFF6F00
+        elif mode == 'Tower':
+            md = 'Tower Control'
+            basebatt = 'gachi'
+            co = 0xFF6F00
+        elif mode == 'Rainmaker':
+            md = 'Rainmaker'
+            basebatt = 'gachi'
+            co = 0xFF6F00
+        elif mode == 'Clam':
+            md = 'Clam Blitz'
+            basebatt = 'gachi'
+            co = 0xFF6F00
         else:
             log.info('something fucked up... fix it?')
 
@@ -135,9 +163,36 @@ class Splatoon:
         sthr1 = sch3['maps'][0]
         sthr2 = sch3['maps'][1]
         if md == 'Xrank':
+            if schmd1 == 'Splat Zones':
+                imageurl = ZONES_MAPS
+            elif schmd1 == 'Tower Control':
+                imageurl = TOWER_MAPS
+            elif schmd1 == 'Rainmaker':
+                imageurl = RAINMAKER_MAPS
+            elif schmd1 == 'Clam Blitz':
+                imageurl = CLAM_MAPS
+            else:
+                imageurl = None
             sched_embed = discord.Embed(title='This Season for X rank', color=co)
-            sched_embed.add_field(name='Maps', value='The Reef\nHumpback Pumptrack\nInkblot Art Academy\nMako Mart\nWallye Warehouse\nGoby Arena\nPiranha Pit\nCamp Triggerfish')
-            sched_embed.add_field(name='Modes', value=f'Current: {schmd1}\nNext: {schmd2}\nLater: {schmd3}')
+            sched_embed.add_field(name='Schedule', value=f'Current: {schmd1}\nNext: {schmd2}\nLater: {schmd3}')
+            sched_embed.add_field(name='Season maps', value='Maps for '+schmd1+' are in the image below')
+            sched_embed.set_image(url=imageurl)
+        elif md == 'Splat Zones':
+            imageurl = ZONES_MAPS
+            sched_embed = discord.Embed(title='The X rank maps for '+md+' are', color=co)
+            sched_embed.set_image(url=imageurl)
+        elif md == 'Tower Control':
+            imageurl = TOWER_MAPS
+            sched_embed = discord.Embed(title='The X rank maps for '+md+' are', color=co)
+            sched_embed.set_image(url=imageurl)
+        elif md == 'Rainmaker':
+            imageurl = RAINMAKER_MAPS
+            sched_embed = discord.Embed(title='The X rank maps for '+md+' are', color=co)
+            sched_embed.set_image(url=imageurl)
+        elif md == 'Clam Blitz':
+            imageurl = CLAM_MAPS
+            sched_embed = discord.Embed(title='The X rank maps for '+md+' are', color=co)
+            sched_embed.set_image(url=imageurl)
         else:
         	desc = "**Current Rotation** \n*__{0}:__* {1} and {2} \n".format(schmd1, sone1, sone2) + "**Next Rotation** \n*__{0}:__* {1} and {2} \n".format(schmd2, stwo1, stwo2) + "**Next Next Rotation** \n*__{0}:__* {1} and {2} \n".format(schmd3, sthr1, sthr2)
         	sched_embed = discord.Embed(title='Map Schedule for {} in Splatoon 2'.format(md), description=desc, color=co)
@@ -188,7 +243,7 @@ class Splatoon:
             await asyncio.sleep(1)
             await ctx.send(embed=festemb)
         elif times['announce'] < curtime:
-            festemb = discord.Embed(title="The Upcoming Splatfest for " + region + ".", description=teams)
+            festemb = discord.Embed(title="The Upcomming Splatfest for " + region + ".", description=teams)
             festemb.set_image(url=imageurl)
             festemb.set_footer(text="Data obtained from splatoon2.ink")
             await ctx.trigger_typing()
@@ -240,7 +295,7 @@ class Splatoon:
             wep4 = w4['name']
 
         if schsrtime > curtime:
-            keyword = "Upcoming"
+            keyword = "Upcomming"
         else:
             keyword = "Ongoing"
         emb = discord.Embed(title=keyword+" shift for Salmon Run", description=stagename, color=0xFF8C00)
