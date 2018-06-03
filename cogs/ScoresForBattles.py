@@ -73,7 +73,7 @@ class Scoring:
                 await ctx.send("It seems there's a problem, try again")
                 return
         except Exception as e:
-            await ctx.send("A {} has occured, plese screenshot this and send this to `InkxtheSquid#8052` on Discord".format(type(e)))
+            await ctx.send("A {} has occurred, plese screenshot this and send this to `InkxtheSquid#8052` on Discord".format(type(e)))
             log.info(e)
 
     @commands.command(aliases=['wt'], pass_context=True, hidden=False)

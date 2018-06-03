@@ -42,9 +42,9 @@ class Admin:
     @commands.is_owner()
     async def load(self, ctx, *, module : str):
         """Loads a module."""
-        extention = "cogs." + module
+        extension = "cogs." + module
         try:
-            self.bot.load_extension(extention)
+            self.bot.load_extension(extension)
         except Exception as e:
             await ctx.message.add_reaction('\U0001f6ab')
             await ctx.send('{}: {}'.format(type(e).__name__, e))
@@ -55,9 +55,9 @@ class Admin:
     @commands.is_owner()
     async def unload(self, ctx, *, module : str):
         """Unloads a module."""
-        extention = "cogs." + module
+        extension = "cogs." + module
         try:
-            self.bot.unload_extension(extention)
+            self.bot.unload_extension(extension)
         except Exception as e:
             await ctx.message.add_reaction('\U0001f6ab')
             await ctx.send('{}: {}'.format(type(e).__name__, e))
@@ -68,10 +68,10 @@ class Admin:
     @commands.is_owner()
     async def _reload(self, ctx, *, module : str):
         """Reloads a module."""
-        extention = "cogs." + module
+        extension = "cogs." + module
         try:
-            self.bot.unload_extension(extention)
-            self.bot.load_extension(extention)
+            self.bot.unload_extension(extension)
+            self.bot.load_extension(extension)
         except Exception as e:
             await ctx.message.add_reaction('\U0001f6ab')
             await ctx.send('{}: {}'.format(type(e).__name__, e))
