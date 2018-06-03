@@ -83,9 +83,9 @@ async def on_ready():
         #channel = discord.utils.get(guild.channels, name='banlogs')
         #try:
             #if entry.reason == None:
-                #return await channel.send(f"**BAN** \n**User**: {user} \n**Reponsible Mod**: {entry.user}")
+                #return await channel.send(f"**BAN** \n**User**: {user} \n**Responsible Mod**: {entry.user}")
             #else:
-                #return await channel.send(f"**BAN** \n**User**: {user} \n**Reason**: {entry.reason} \n**Reponsible Mod**: {entry.user}")
+                #return await channel.send(f"**BAN** \n**User**: {user} \n**Reason**: {entry.reason} \n**Responsible Mod**: {entry.user}")
         #except:
             #pass
 
@@ -127,7 +127,7 @@ async def on_command_error(ctx, error):
             pass
 
     elif isinstance(error, commands.CommandNotFound):
-        log.info(f"\"{ctx.message.guild}\": \"{ctx.message.author}\" used a command thats not in Inkxbot, content is resent here: '{ctx.message.content}'")
+        log.info(f"\"{ctx.message.guild}\": \"{ctx.message.author}\" used a command that's not in Inkxbot, content is resent here: '{ctx.message.content}'")
     elif isinstance(error, commands.MissingRequiredArgument):
         channel = ctx.message.channel
         await channel.trigger_typing()

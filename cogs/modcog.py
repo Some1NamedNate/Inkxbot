@@ -148,9 +148,9 @@ class Moderation:
             async for entry in guild.audit_logs(action=discord.AuditLogAction.ban):
                 channel = discord.utils.get(guild.channels, name='banlogs')
                 if entry.reason == None:
-                    return await channel.send(f"**BAN** \n**User**: {user} \n**Reponsible Mod**: {entry.user}")
+                    return await channel.send(f"**BAN** \n**User**: {user} \n**Responsible Mod**: {entry.user}")
                 else:
-                    return await channel.send(f"**BAN** \n**User**: {user} \n**Reason**: {entry.reason} \n**Reponsible Mod**: {entry.user}")
+                    return await channel.send(f"**BAN** \n**User**: {user} \n**Reason**: {entry.reason} \n**Responsible Mod**: {entry.user}")
         except (discord.errors.Forbidden, AttributeError):
             pass
 
