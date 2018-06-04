@@ -1,7 +1,11 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+<<<<<<< HEAD
 *$py.class 
+=======
+*$py.class
+>>>>>>> parent of 0af61f0... update to files
 
 # C extensions
 *.so
